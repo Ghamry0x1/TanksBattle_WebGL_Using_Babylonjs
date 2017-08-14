@@ -4,3 +4,7 @@
 *.mat
 *.fbx
 *.wav
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/modules.xml
+.idea/TanksBattle_WebGL.iml
+.idea/workspace.xml
