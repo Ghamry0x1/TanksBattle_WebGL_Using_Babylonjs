@@ -5,6 +5,7 @@
     </head>
     <body>
         <canvas id="UICanvas" width="1340" height="628"><p>Your browser does not support HTML5!</p></canvas>
+        <input id="btntest" type="button" value="Check" onclick="return btntest_onclick()" />
         <script type="text/javascript">
             var canvas = document.getElementById("UICanvas");
             var context = canvas.getContext("2d");
@@ -17,23 +18,25 @@
             };
             bgImage.src = "images/StartPage.png";
 
-            /*var mX, mY;
-            document.onmousemove = update;
-
-            function update(e)  {
-                mX = e.clientX;
-                mY = e.clientY;
-                console.log("x: " + mX + " y: " + mY);
-            }*/
-
-            document.onmousemove = point_it;
-
+            document.onmouseup = point_it;
             function point_it(event){
-                pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById("pointer_div").offsetLeft;
-                pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById("pointer_div").offsetTop;
-                console.log("x: " + pos_x + "y: " + pos_y);
+                if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=314&&event.offsetY<=382)) {
+                    console.log("play");
+                    btntest_onclick("/Game.html");
+                }
+                if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=402&&event.offsetY<=472)) {
+                    console.log("insturctions");
+                    btntest_onclick();
+                }
+                if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=488&&event.offsetY<=558)) {
+                    console.log("credits");
+                    btntest_onclick();
+                }
             }
 
+            function btntest_onclick(redirect) {
+                window.location.href = redirect;
+            }
         </script>
     </body>
 </html>
