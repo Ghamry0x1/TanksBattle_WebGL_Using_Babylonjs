@@ -1,16 +1,17 @@
-﻿//python -m http.server
-
-document.addEventListener("DOMContentLoaded", startGame, false);
+﻿document.addEventListener("DOMContentLoaded", startGame, false);
 
 var canvas;
 var engine;
 var scene;
 var tank;
+//var tankParent;
 
 var isWPressed = false;
 var isSPressed = false;
 var isDPressed = false;
 var isAPressed = false;
+
+var isTankReady = false;
 
 const NEG_Z_VECTOR = new BABYLON.Vector3(0, 0, -1);
 
@@ -31,16 +32,45 @@ function createScene() {
     var skybox = createSkybox();
 
     tank = createHero();
-
-    var followCamera = createFollowCamera();
-    scene.activeCamera = followCamera;
-    followCamera.attachControl(canvas);
-
-    engine.runRenderLoop(function() {
-        scene.render();
-        applyTankMovements();
-    });
+    //tankParent = createTankParent();
+    waitForIt();
 }
+
+function waitForIt(){
+    if (isTankReady) {
+        var followCamera = createFollowCamera();
+        scene.activeCamera = followCamera;
+        followCamera.attachControl(canvas);
+
+        followCamera.applyGravity = true;
+        followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        scene.collisionsEnabled = true;
+        followCamera.checkCollisions = true;
+
+        engine.runRenderLoop(function() {
+            scene.render();
+            if(tank) {
+                applyTankMovements();
+                //tank.parent = tankParent;
+            }
+        });
+    }
+    else { setTimeout(function(){waitForIt()},300); }
+}
+
+/*function createFreeCamera(scene) {
+    var camera = new BABYLON.FreeCamera("c1",new BABYLON.Vector3(0, 10, 0), scene);
+    camera.keysUp.push('w'.charCodeAt(0));
+    camera.keysUp.push('W'.charCodeAt(0));
+    camera.keysDown.push('s'.charCodeAt(0));
+    camera.keysDown.push('S'.charCodeAt(0));
+    camera.keysRight.push('d'.charCodeAt(0));
+    camera.keysRight.push('D'.charCodeAt(0));
+    camera.keysLeft.push('a'.charCodeAt(0));
+    camera.keysLeft.push('A'.charCodeAt(0));
+    camera.checkCollisions = true;
+    return camera;
+}*/
 
 function createLight() {
     var hemisphericlight = new BABYLON.HemisphericLight("l1", new BABYLON.Vector3(0, 5, 0), scene);
@@ -77,7 +107,7 @@ function createSkybox() {
 }
 
 function createFollowCamera() {
-    var camera = new BABYLON.FollowCamera("followCamera", new BABYLON.Vector3(0, 2, -20), scene);
+    var camera = new BABYLON.FollowCamera("follow", new BABYLON.Vector3(0, 2, -20), scene);
     camera.lockedTarget = tank;
     camera.radius = 10; // how far from the object to follow
     camera.heightOffset = 2; // how high above the object to place the camera
@@ -119,6 +149,23 @@ function Listeners() {
     });
 }
 
+function createHero() {
+    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank1.babylon", scene, onSuccess);
+    function onSuccess(newMeshes, particles, skeletons) {
+        tank = newMeshes[0];
+        tank.checkCollisions = true;
+        tank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        tank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+        tank.applyGravity = true;
+        tank.frontVector = new BABYLON.Vector3(0, 0, -1);
+        tank.rotationSensitivity = .1;
+        tank.speed = 1;
+        isTankReady = true;
+        console.log("returning tank of type " + typeof tank + " and isTankReady = " + isTankReady);
+        return tank;
+    }
+}
+
 function applyTankMovements() {
     if (isWPressed) {
         tank.moveWithCollisions(tank.frontVector);
@@ -138,149 +185,23 @@ function applyTankMovements() {
     tank.frontVector.y = -4; // adding a bit of gravity
 }
 
-function createHero() {
-    var tank = new BABYLON.Mesh.CreateBox("tank", 2, scene);
-    var tankMaterial = new BABYLON.StandardMaterial("tankMat", scene);
-    tankMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1);
-    tank.material = tankMaterial;
+/*function createTankParent() {
+    tankParent = new BABYLON.Mesh.CreateBox("tankParent", 2, scene);
 
-    tank.position.y += 1;
-    tank.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-    tank.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
+    tankParent.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
+    tankParent.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
 
-    tank.scaling.y *= .5;
-    tank.scaling.x = .5;
-    tank.scaling.z = 1;
+    tankParent.scaling.y = 1.8;
+    tankParent.scaling.x = .8;
+    tankParent.scaling.z = 1.1;
 
-    tank.rotationSensitivity = .1;
-    tank.speed = 1;
-    tank.frontVector = new BABYLON.Vector3(0, 0, -1);
-    tank.checkCollisions = true;
-    tank.applyGravity = true;
+    tankParent.wireframe = true;
 
-    return tank;
-}
+    tankParent.rotationSensitivity = .1;
+    tankParent.speed = 1;
+    tankParent.frontVector = new BABYLON.Vector3(0, 0, -1);
+    tankParent.checkCollisions = true;
+    tankParent.applyGravity = true;
 
-function createTank() {
-    /*var tank2 = BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank.babylon", scene, onSuccess);
-    function onSuccess(newMeshes, particles, skeletons) {
-
-
-    tank = newMeshes[0];
-        console.log( typeof tank2);
-
-        tank2.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
-        tank2.position.y = 3.392;
-        tank2.checkCollisions = true;
-        tank2.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-        tank2.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-
-        tank2.applyGravity = true;
-    }
-    return tank2;*/
-
-    //works
-    /*var assetsManager = new BABYLON.AssetsManager(scene);
-    var tank2 = assetsManager.addMeshTask("tank", "", "GameObjects/", "cartoontank.babylon");
-    tank2.onSuccess = function (task) {
-        console.log("loaded as " + typeof tank2);
-        task.loadedMeshes[0].position = BABYLON.Vector3.Zero();
-        task.loadedMeshes[0].position.y += 1;
-        task.loadedMeshes[0].checkCollisions = true;
-
-        tank2.position.y += 1;
-        tank2.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-        tank2.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
-        tank2.scaling.y *= .5;
-        tank2.scaling.x = .5;
-        tank2.scaling.z = 1;
-
-        tank2.material.wireframe = true;
-
-        tank2.rotationSensitivity = .1;
-        tank2.speed = 1;
-        tank2.frontVector = new BABYLON.Vector3(0, 0, -1);
-        tank2.checkCollisions = true;
-        tank2.applyGravity = true;
-
-    }
-    assetsManager.onFinish = function(tasks) {
-        engine.runRenderLoop(function() {
-            scene.render();
-        });
-    };
-    assetsManager.load();
-    return tank2;*/
-
-    //works
-    tank2 = BABYLON.SceneLoader.Load("GameObjects/", "tank1.babylon", engine, function () {
-        console.log("tank2 loaded as " + typeof tank2);
-    });
-    var loader = new BABYLON.AssetsManager(scene);
-    var tank2 = loader.addMeshTask("cartoontank", "", "GameObjects/", "tank1.babylon");
-
-    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank1.babylon", scene, function (meshes) {
-        console.log("import mesh done");
-        tank2.position.y += 10;
-        tank2.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-        tank2.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
-        tank2.scaling.y *= .5;
-        tank2.scaling.x = .5;
-        tank2.scaling.z = 1;
-        //tank2.workerCollisions = true
-    });
-
-    console.log(typeof tank2);
-    return tank2;
-
-    /*BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "cartoontank.babylon", scene, onTankLoaded);
-    function onTankLoaded() {
-        console.log(typeof this);
-        tank2 = this;
-        console.log(typeof tank2);
-        tank2.position.y += 1;
-        tank2.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-        tank2.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
-        tank2.scaling.y *= .5;
-        tank2.scaling.x = .5;
-        tank2.scaling.z = 1;
-        tank2.workerCollisions = true
-
-    }*/
-
-    //var x = new Object();
-
-
-    /*BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "cartoontank.babylon", scene, onTankLoaded);
-    function onTankLoaded(newMeshes, particleSystems,skeletons) {
-        console.log(typeof this);
-        tank2 = this;
-        console.log(typeof tank2);
-
-        dudes[0] = newMeshes[0];
-        dudes[0].scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
-        dudes[0].position.y = 3.392;
-        dudes[0].checkCollisions = true;
-        dudes[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
-        dudes[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-
-        dudes[0].applyGravity = true;
-        //  dudes[0].onCollide = function () { console.log('I am colliding with something') }
-
-        dudes[0].skeletons = [];
-        for (var i = 0; i < skeletons.length; i += 1) {
-            dudes[0].skeletons[i] = skeletons[i];
-            scene.beginAnimation(dudes[0].skeletons[i], 0, 120, 1.0, true);
-        }
-
-        console.log(typeof dudes[0]);
-
-        tank2.position.y += 1;
-        tank2.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-        tank2.ellipsoidOffset = new BABYLON.Vector3(0, 2.0, 0);
-        tank2.scaling.y *= .5;
-        tank2.scaling.x = .5;
-        tank2.scaling.z = 1;
-        tank2.workerCollisions = true
-    }*/
-}
+    return tankParent;
+}*/
