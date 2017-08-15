@@ -43,8 +43,8 @@ function createScene() {
     scene = new BABYLON.Scene(engine);
     engine.isPointerLock = true;
     engine.enableOfflineSupport = false;
-    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
-    //scene.fogDensity = 0.01;
+    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP; //fog mode
+    //scene.fogDensity = 0.01; //fog mode
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
 
     var ground = createGround();
@@ -114,6 +114,7 @@ function createFreeCamera(scene) {
 
 function createLight() {
     var hemisphericlight = new BABYLON.HemisphericLight("l1", new BABYLON.Vector3(0, 5, 0), scene);
+    //hemisphericlight.intensity = 0.3; //fog mode
     return hemisphericlight;
 }
 
@@ -121,7 +122,6 @@ function createGround() {
     var ground = new BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/myHeightMap.png", 500, 500, 20, 0, 10, scene, false, onGroundCreated);
 
     var groundMaterial = new BABYLON.StandardMaterial("m1", scene);
-    //groundMaterial.diffuseColor = new BABYLON.Color3(.35, .30, .25);
     groundMaterial.diffuseTexture = new BABYLON.Texture("images/sand.jpg", scene);
 
     function onGroundCreated() {
