@@ -3,10 +3,7 @@
 var canvas;
 var engine;
 var scene;
-
-var Game = {};
-Game.scenes = [];
-Game.activeScene = 0;
+var sceneNum = 0;
 
 var tank;
 var bustedTank;
@@ -37,21 +34,19 @@ function startGame() {
     Listeners();
 }
 
-function createScene() {
+function createSandScene() {
     canvas = document.getElementById("renderCanvas");
     engine = new BABYLON.Engine(canvas, true);
     scene = new BABYLON.Scene(engine);
     engine.isPointerLock = true;
     engine.enableOfflineSupport = false;
-    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP; //fog mode
-    //scene.fogDensity = 0.01; //fog mode
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
 
     var ground = createGround();
     var light = createLight();
     var skybox = createSkybox();
 
-    tank = createTank();
+    tank = createTank("tank1.babylon");
     cactus = createCactus();
     radar = createRadar();
     cow = createCow();
@@ -65,6 +60,41 @@ function createScene() {
     barrel = createBarrel();
 
     waitForIt();
+}
+
+function createFogScene() {
+    canvas = document.getElementById("renderCanvas");
+    engine = new BABYLON.Engine(canvas, true);
+    scene = new BABYLON.Scene(engine);
+    engine.isPointerLock = true;
+    engine.enableOfflineSupport = false;
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    scene.fogDensity = 0.01;
+    scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
+
+    var ground = createGround();
+    var light = createLight(1);
+    var skybox = createSkybox();
+
+    tank = createTank("tank1.babylon");
+    cactus = createCactus();
+    radar = createRadar();
+    cow = createCow();
+    bustedTank = createBustedTank();
+    helipad = createHelipad();
+    oilStorage = createOilStorage();
+    palmTree = createPalmTree();
+    tree = createTree();
+    rocks1 = createRocks1();
+    rocks2 = createRocks2();
+    barrel = createBarrel();
+
+    waitForIt();
+}
+
+function createScene() {
+    if(sceneNum === 0) { createSandScene(); }
+    else if(sceneNum === 1) { createFogScene(); }
 }
 
 function waitForIt(){
@@ -112,9 +142,11 @@ function createFreeCamera(scene) {
     return camera;
 }
 
-function createLight() {
+function createLight(flag) {
     var hemisphericlight = new BABYLON.HemisphericLight("l1", new BABYLON.Vector3(0, 5, 0), scene);
-    //hemisphericlight.intensity = 0.3; //fog mode
+    if(flag === 1) {
+        hemisphericlight.intensity = .3;
+    }
     return hemisphericlight;
 }
 
@@ -122,6 +154,7 @@ function createGround() {
     var ground = new BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/myHeightMap.png", 500, 500, 20, 0, 10, scene, false, onGroundCreated);
 
     var groundMaterial = new BABYLON.StandardMaterial("m1", scene);
+    //groundMaterial.diffuseColor = new BABYLON.Color3(.35, .30, .25);
     groundMaterial.diffuseTexture = new BABYLON.Texture("images/sand.jpg", scene);
 
     function onGroundCreated() {
@@ -195,8 +228,8 @@ function Listeners() {
     });
 }
 
-function createTank() {
-    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank1.babylon", scene, onSuccess);
+function createTank(assetName) {
+    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", assetName, scene, onSuccess);
     function onSuccess(newMeshes, particles, skeletons) {
         tank = newMeshes[0];
         //tank.position.y += 20;
