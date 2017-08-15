@@ -48,7 +48,7 @@ function createScene() {
     var light = createLight();
     var skybox = createSkybox();
 
-    tank = createTank();
+    tank = createTank("tank1.babylon");
     cactus = createCactus();
     radar = createRadar();
     cow = createCow();
@@ -192,8 +192,8 @@ function Listeners() {
     });
 }
 
-function createTank() {
-    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank1.babylon", scene, onSuccess);
+function createTank(assetName) {
+    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", assetName, scene, onSuccess);
     function onSuccess(newMeshes, particles, skeletons) {
         tank = newMeshes[0];
         //tank.position.y += 20;
