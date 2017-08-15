@@ -19,13 +19,15 @@ var rocks2;
 var barrel;
 
 var isWPressed = false;
+var isAPressed = false;
 var isSPressed = false;
 var isDPressed = false;
-var isAPressed = false;
+var isFPressed = false;
 
 var isTankReady = false;
 
 const NEG_Z_VECTOR = new BABYLON.Vector3(0, 0, -1);
+const GRAVITY_VECTOR = new BABYLON.Vector3(0, 0, 0);
 
 function startGame() {
     createScene();
@@ -38,12 +40,15 @@ function createScene() {
     scene = new BABYLON.Scene(engine);
     engine.isPointerLock = true;
     engine.enableOfflineSupport = false;
+    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+    //scene.fogDensity = 0.01;
+    scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
 
     var ground = createGround();
     var light = createLight();
     var skybox = createSkybox();
 
-    tank = createHero();
+    tank = createTank();
     cactus = createCactus();
     radar = createRadar();
     cow = createCow();
@@ -63,24 +68,34 @@ function waitForIt(){
     if (isTankReady) {
         var followCamera = createFollowCamera();
         scene.activeCamera = followCamera;
-        followCamera.attachControl(canvas);
+        scene.collisionsEnabled = true;
 
+        followCamera.attachControl(canvas);
         followCamera.applyGravity = true;
         followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-        scene.collisionsEnabled = true;
         followCamera.checkCollisions = true;
+
+        /*var freeCamera = createFreeCamera();
+        scene.activeCamera = freeCamera;
+        scene.collisionsEnabled = true;
+
+        freeCamera.attachControl(canvas);
+        freeCamera.applyGravity = true;
+        freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        freeCamera.checkCollisions = true;*/
 
         engine.runRenderLoop(function() {
             scene.render();
             if(tank) {
                 applyTankMovements();
+                fire();
             }
         });
     }
     else { setTimeout(function(){waitForIt()},300); }
 }
 
-/*function createFreeCamera(scene) {
+function createFreeCamera(scene) {
     var camera = new BABYLON.FreeCamera("c1",new BABYLON.Vector3(0, 10, 0), scene);
     camera.keysUp.push('w'.charCodeAt(0));
     camera.keysUp.push('W'.charCodeAt(0));
@@ -92,7 +107,7 @@ function waitForIt(){
     camera.keysLeft.push('A'.charCodeAt(0));
     camera.checkCollisions = true;
     return camera;
-}*/
+}
 
 function createLight() {
     var hemisphericlight = new BABYLON.HemisphericLight("l1", new BABYLON.Vector3(0, 5, 0), scene);
@@ -153,6 +168,9 @@ function Listeners() {
         if (event.key == 'w' || event.key == 'W') {
             isWPressed = false;
         }
+        if(event.key == 'f' || event.key =='F') {
+            isFPressed = false;
+        }
     });
 
     document.addEventListener("keydown", function() {
@@ -168,11 +186,14 @@ function Listeners() {
         if (event.key == 'w' || event.key == 'W') {
             isWPressed = true;
         }
+        if(event.key == 'f' || event.key =='F') {
+            isFPressed = true;
+        }
     });
 }
 
-function createHero() {
-    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank.babylon", scene, onSuccess);
+function createTank() {
+    BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tank1.babylon", scene, onSuccess);
     function onSuccess(newMeshes, particles, skeletons) {
         tank = newMeshes[0];
         //tank.position.y += 20;
@@ -373,6 +394,25 @@ function createBarrel() {
         barrel.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
         barrel.applyGravity = true;
         return barrel;
+    }
+}
+
+function fire() {
+    if(isFPressed) {
+        console.log("shooting balls");
+        var CannonBall = BABYLON.Mesh.CreateSphere("s", 50, 5, scene, false);
+        var materialWood = new BABYLON.StandardMaterial("wood", scene);
+        materialWood.diffuseColor = new BABYLON.Color3.Green;
+        materialWood.emissiveColor = new BABYLON.Color3.Yellow;
+        CannonBall.position = tank.position.add(BABYLON.Vector3.Zero().add(tank.frontVector.normalize().multiplyByFloats(20, 12, 20).negate()));
+        CannonBall.scaling.x/=10;
+        CannonBall.scaling.y/=10;
+        CannonBall.scaling.z/=10;
+        CannonBall.position.y-=10;
+        CannonBall.physicsImpostor = new BABYLON.PhysicsImpostor(CannonBall, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, friction: 10, restitution: .2 }, scene);
+        CannonBall.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero().add(tank.frontVector.normalize().multiplyByFloats(-500, 0, -500).negate()));
+        CannonBall.material = materialWood;
+        setTimeout(function () { CannonBall.dispose(); }, 3000);
     }
 }
 
