@@ -30,11 +30,11 @@ const NEG_Z_VECTOR = new BABYLON.Vector3(0, 0, -1);
 const GRAVITY_VECTOR = new BABYLON.Vector3(0, 0, 0);
 
 function startGame() {
-    createScene();
+    createSandScene();
     Listeners();
 }
 
-function createScene() {
+function createSandScene() {
     canvas = document.getElementById("renderCanvas");
     engine = new BABYLON.Engine(canvas, true);
     scene = new BABYLON.Scene(engine);
