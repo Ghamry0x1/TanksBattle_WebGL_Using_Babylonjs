@@ -17,15 +17,25 @@
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/PlayPage.png";
-
-    //back btn coordinates
-    document.onmouseup = point_it;
+    
     function point_it(event){
+        //back btn coordinates
         if((event.offsetX>=1129&&event.offsetX<=1279)&&(event.offsetY>=542&&event.offsetY<=592)) {
             console.log("back");
             btntest_onclick("/StartPage.html");
         }
+        //sand
+        if((event.offsetX>=66&&event.offsetX<=352)&&(event.offsetY>=206&&event.offsetY<=398)) {
+            console.log("sand");
+            btntest_onclick("/Play.html");
+        }
+        //fog
+        if((event.offsetX>=384&&event.offsetX<=668)&&(event.offsetY>=206&&event.offsetY<=398)) {
+            console.log("fog");
+            btntest_onclick("/Play.html");
+        }
     }
+
 
     function btntest_onclick(redirect) {
         window.location.href = redirect;
