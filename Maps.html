@@ -17,7 +17,8 @@
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/PlayPage.png";
-    
+
+    document.onmouseup = point_it;
     function point_it(event){
         //back btn coordinates
         if((event.offsetX>=1129&&event.offsetX<=1279)&&(event.offsetY>=542&&event.offsetY<=592)) {
