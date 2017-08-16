@@ -6,6 +6,7 @@ var engine;
 var Game = {};
 Game.scenes = [];
 Game.activeScene = 0;
+
 var isWPressed = false;
 var isSPressed = false;
 var isDPressed = false;
@@ -14,13 +15,9 @@ var isBPressed = false;
 var isCPressedAndReleased = false;
 var isFPressedAndReleased = false;
 
-
 const NEG_Z_VECTOR = new BABYLON.Vector3(0, -1, -1);
 
-
-
-Game.createFirstScene = function()
-{
+Game.createFirstScene = function() {
     var tank;
     var dudes = [];
     var scene = new BABYLON.Scene(engine);
@@ -161,7 +158,6 @@ Game.createFirstScene = function()
 
 }
 
-
 Game.createSecondScene = function () {
     var tank;
     var dudes = [];
@@ -283,7 +279,6 @@ Game.createSecondScene = function () {
 
 }
 
-
 function startGame() {
     canvas = document.getElementById("renderCanvas");
     engine = new BABYLON.Engine(canvas, true);
@@ -291,7 +286,6 @@ function startGame() {
     engine.displayLoadingUI();
     Game.createFirstScene();
     Game.createSecondScene();
-
 
     engine.runRenderLoop(function () {
         if (Game.scenes[0].isLoaded) {
@@ -302,9 +296,6 @@ function startGame() {
     });
 
 }
-
-
-
 
 //Possibly shared functions to multiple scenes
 
@@ -421,8 +412,6 @@ function createArcRotateCamera(target, scene) {
     return camera;
 }
 
-
-
 function loadDudes(NumDudes,dudes,scene) {
 
     BABYLON.SceneLoader.ImportMesh("him", "scenes/", "Dude.babylon", scene, onDudeLoaded);
@@ -480,7 +469,6 @@ function loadDudes(NumDudes,dudes,scene) {
 
 }
 
-
 function cloneModel(model, name, scene) {
     var tempClone;
     tempClone = model.clone("clone_" + name);
@@ -495,7 +483,7 @@ function cloneModel(model, name, scene) {
         for (var i = 0; i < model._children.length; i += 1) {
             if (tempClone.skeletons.length > 1) //Mostlikely a seperate skeleton for each child mesh..
                 tempClone._children[i].skeleton = tempClone.skeletons[i];
-            else //Mostlikely a single skeleton for all child meshes.
+            else //Most likely a single skeleton for all child meshes.
                 tempClone._children[i].skeleton = tempClone.skeletons[0];
         }
     } else {
@@ -504,7 +492,6 @@ function cloneModel(model, name, scene) {
     return tempClone;
 
 }
-
 
 function calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene) {
     var minx = 10000; var miny = 10000; var minz = 10000; var maxx = -10000; var maxy = -10000; var maxz = -10000;
@@ -578,9 +565,7 @@ function drawEllipsoid(mesh) {
     ellipsoid.computeWorldMatrix(true);
 }
 
-
 // Listeners
-
 document.addEventListener("keyup", function () {
     if (event.key == 'a' || event.key == 'A') {
         isAPressed = false;
@@ -611,7 +596,6 @@ document.addEventListener("keyup", function () {
 
 
 });
-
 document.addEventListener("keydown", function () {
 
     if (event.key == 'a' || event.key == 'A') {
