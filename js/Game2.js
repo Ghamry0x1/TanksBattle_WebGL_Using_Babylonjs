@@ -6,6 +6,7 @@ var scene;
 var sceneNum = 0;
 
 var tank;
+var tank2;
 var bustedTank;
 var cactus;
 var radar;
@@ -47,6 +48,7 @@ function createSandScene() {
     var skybox = createSkybox();
 
     tank = createTank("tank1.babylon");
+    tank2 = createTank("tank2.babylon");
     cactus = createCactus();
     radar = createRadar();
     cow = createCow();
@@ -234,6 +236,7 @@ function createTank(assetName) {
         tank = newMeshes[0];
         //tank.position.y += 20;
         tank.checkCollisions = true;
+        tank.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1))
         tank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
         tank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
         tank.applyGravity = true;
