@@ -216,7 +216,7 @@ function Game() {
         skybox.material = skyboxMaterial;
         skybox.infiniteDistance = true;
         skyboxMaterial.disableLighting = true;
-        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox/skybox", scene);
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("images/skybox/skybox", scene);
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
         isPickable = false;
         return skybox;
