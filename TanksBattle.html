@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Tanks Battle </title>
+        <style type="text/css">
+            html,
+            body,
+            #canvas,
+            #canvasZone,
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+            #UICanvas {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+            #CreditsCanvas {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+            #InstructionsCanvas {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+            #MapsCanvas {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+        </style>
+        <script src="js/babylon.max.js"></script>
+        <script src="js/cannon.max.js"></script>
+    </head>
+    <body>
+        <!-- CANVAS -->
+        <canvas id="renderCanvas" width="1600" height="1200"></canvas>
+        <canvas id="MapsCanvas" width="1340" height="628"></canvas>
+        <canvas id="CreditsCanvas" width="1340" height="628"></canvas>
+        <canvas id="InstructionsCanvas" width="1340" height="628"></canvas>
+        <canvas id="UICanvas" width="1340" height="628"></canvas>
+
+        <!-- SCRIPTS -->
+        <script type="text/javascript">
+            function onclick(redirectCanvas) {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+
+                document.getElementById(redirectCanvas).style.display = "inline";
+                if(document.getElementById("UICanvas").style.display === "inline") {
+                    UI();
+                }
+                else if(document.getElementById("renderCanvas").style.display === "inline") {
+                    Game();
+                }
+                else if(document.getElementById("CreditsCanvas").style.display === "inline") {
+                    Credits();
+                }
+                else if(document.getElementById("InstructionsCanvas").style.display === "inline") {
+                    Instructions();
+                }
+                else if(document.getElementById("MapsCanvas").style.display === "inline") {
+                    Maps();
+                }
+            }
+        </script>
+        <script src="js/Game2.js"></script>
+        <script src="js/Maps.js"></script>
+        <script src="js/Credits.js"></script>
+        <script src="js/Instructions.js"></script>
+        <script src="js/UI.js"></script>
+    </body>
+</html>
