@@ -238,13 +238,13 @@ function Game() {
         function onSuccess(newMeshes, particles, skeletons) {
             tank = newMeshes[0];
             //tank.position.y += 20;
+            tank.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
             tank.checkCollisions = true;
             tank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
             tank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
             tank.applyGravity = true;
             tank.frontVector = new BABYLON.Vector3(0, 0, -1);
             tank.rotationSensitivity = .1;
-            tank.speed = 1;
             isTankReady = true;
             console.log("returning tank of type " + typeof tank + " and isTankReady = " + isTankReady);
             return tank;
