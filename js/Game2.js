@@ -7,16 +7,16 @@ function Game() {
     var tank;
     var bullet;
     var bustedTank;
-    var cactus;
-    var radar;
-    var cow;
-    var helipad;
-    var oilStorage;
-    var palmTree;
-    var tree;
-    var rocks1;
-    var rocks2;
-    var barrel;
+    var cactus = [];
+    var radar = [];
+    var cow = [];
+    var helipad = [];
+    var oilStorage = [];
+    var palmTree = [];
+    var tree = [];
+    var rocks1 = [];
+    var rocks2 = [];
+    var barrel = [];
 
     var isWPressed = false;
     var isAPressed = false;
@@ -89,17 +89,17 @@ function Game() {
         var skybox = createSkybox();
 
         tank = createTank("tank1.babylon");
-        cactus = createCactus();
-        radar = createRadar();
-        cow = createCow();
-        bustedTank = createBustedTank();
-        helipad = createHelipad();
-        oilStorage = createOilStorage();
-        palmTree = createPalmTree();
-        tree = createTree();
-        rocks1 = createRocks1();
-        rocks2 = createRocks2();
-        barrel = createBarrel();
+        //bustedTank = createBustedTank();
+
+        cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,10);
+        cow = createModel("cow.babylon",null,null,1,1,1,20);
+        helipad = createModel("helipad.babylon",null,null,2,1,2,3);
+        oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,2);
+        palmTree = createModel("palmTree.babylon",null,null,1.5,1,1.5,10);
+        tree = createModel("tree.babylon",null,null,1.5,1,1.5,10);
+        rocks1 = createModel("rocks1.babylon",null,null,1,1,1,5);
+        rocks2 = createModel("rocks2.babylon",null,null,1,1,1,5);
+        barrel = createModel("barrel.babylon",null,null,1,1,1,10);
 
         waitForIt();
     }
@@ -157,7 +157,8 @@ function Game() {
             freeCamera.attachControl(canvas);
             freeCamera.applyGravity = true;
             freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            freeCamera.checkCollisions = true;*/
+            freeCamera.checkCollisions = true;
+            console.log("isCPressed: " + isCPressed);*/
 
             engine.runRenderLoop(function() {
                 scene.render();
@@ -171,17 +172,28 @@ function Game() {
         else { setTimeout(function(){waitForIt()},300); }
     }
 
-    function createFreeCamera(scene) {
+    function createFreeCamera() {
         var camera = new BABYLON.FreeCamera("c1",new BABYLON.Vector3(0, 10, 0), scene);
-        camera.keysUp.push('w'.charCodeAt(0));
-        camera.keysUp.push('W'.charCodeAt(0));
-        camera.keysDown.push('s'.charCodeAt(0));
-        camera.keysDown.push('S'.charCodeAt(0));
-        camera.keysRight.push('d'.charCodeAt(0));
-        camera.keysRight.push('D'.charCodeAt(0));
-        camera.keysLeft.push('a'.charCodeAt(0));
-        camera.keysLeft.push('A'.charCodeAt(0));
+        camera.keysUp.push('i'.charCodeAt(0));
+        camera.keysUp.push('I'.charCodeAt(0));
+        camera.keysDown.push('k'.charCodeAt(0));
+        camera.keysDown.push('K'.charCodeAt(0));
+        camera.keysRight.push('l'.charCodeAt(0));
+        camera.keysRight.push('L'.charCodeAt(0));
+        camera.keysLeft.push('j'.charCodeAt(0));
+        camera.keysLeft.push('J'.charCodeAt(0));
         camera.checkCollisions = true;
+        return camera;
+    }
+
+    function createFollowCamera() {
+        var camera = new BABYLON.FollowCamera("follow", new BABYLON.Vector3(0, 2, -20), scene);
+        camera.lockedTarget = tank;
+        camera.radius = 10; // how far from the object to follow
+        camera.heightOffset = 2; // how high above the object to place the camera
+        camera.rotationOffset = 0; // the viewing angle
+        camera.cameraAcceleration = 0.05 // how fast to move
+        camera.maxCameraSpeed = 20 // speed limit
         return camera;
     }
 
@@ -220,17 +232,6 @@ function Game() {
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
         isPickable = false;
         return skybox;
-    }
-
-    function createFollowCamera() {
-        var camera = new BABYLON.FollowCamera("follow", new BABYLON.Vector3(0, 2, -20), scene);
-        camera.lockedTarget = tank;
-        camera.radius = 10; // how far from the object to follow
-        camera.heightOffset = 2; // how high above the object to place the camera
-        camera.rotationOffset = 0; // the viewing angle
-        camera.cameraAcceleration = 0.05 // how fast to move
-        camera.maxCameraSpeed = 20 // speed limit
-        return camera;
     }
 
     function createTank(assetName) {
@@ -494,5 +495,42 @@ function Game() {
             }
 
         }
+    }
+
+    function createModel(modelName,materialName,modelColor,scaleX,scaleY,scaleZ,num) {
+        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", modelName, scene, onSuccess);
+        function onSuccess(newMeshes, particles, skeletons) {
+            var model = [];
+            model[0] = newMeshes[0];
+            if(materialName) {
+                var modelMaterial = new BABYLON.StandardMaterial(materialName, scene);
+                modelMaterial.diffuseColor = modelColor;
+                model[0].material = modelMaterial;
+            }
+            model[0].checkCollisions = true;
+            model[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            model[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            model[0].applyGravity = true;
+
+            model = clone(model[0],num);
+            for(var i=0;i<model.length;i++) {
+                var scale = Math.random()*4.5+0.5;
+                model[i].scaling.x*=(scaleX);
+                model[i].scaling.y*=(scaleY);
+                model[i].scaling.z*=(scaleZ);
+            }
+            for(var i=1;i<model.length;i++) {
+                model[i].position.x += (Math.random() * (200 + 200) - 200);
+                model[i].position.z += (Math.random() * (200 + 200) - 200);
+            }
+            return model;
+        }
+    }
+
+    function clone(model,num){
+        var clones = [];
+        for(var i=0;i<num;i++)
+            clones.push(model.clone("clone_" + i));
+        return clones;
     }
 }
