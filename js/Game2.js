@@ -1,12 +1,13 @@
 var sceneNum = 0;
 function Game() {
+    /*Variables*/
     var canvas;
     var engine;
     var scene;
 
     var tank;
     var bullet;
-    var bustedTank;
+    var bustedTank1;
     var cactus = [];
     var radar = [];
     var cow = [];
@@ -29,12 +30,12 @@ function Game() {
     var isPickable = true;
     var isTankReady = false;
 
-    const NEG_Z_VECTOR = new BABYLON.Vector3(0, 0, -1);
-    const GRAVITY_VECTOR = new BABYLON.Vector3(0, 0, 0);
+    var health1 = 100;
+    var greenValue = 255;
 
-    createScene();
+/*--------------------------------------------------------------------------------------------------------------------*/
 
-    //Listeners
+    /*Listeners*/
     document.addEventListener("keyup", function() {
         if (event.key == 'a' || event.key == 'A') {
             isAPressed = false;
@@ -76,6 +77,9 @@ function Game() {
         }
     });
 
+    createScene();
+
+    /*Functions*/
     function createSandScene() {
         canvas = document.getElementById("renderCanvas");
         engine = new BABYLON.Engine(canvas, true);
@@ -92,6 +96,7 @@ function Game() {
         //bustedTank = createBustedTank();
 
         cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,10);
+        radar = createModel("radar.babylon",null,null,1,1,1,2);
         cow = createModel("cow.babylon",null,null,1,1,1,20);
         helipad = createModel("helipad.babylon",null,null,2,1,2,3);
         oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,2);
@@ -122,11 +127,12 @@ function Game() {
         //bustedTank = createBustedTank();
 
         cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,15);
+        radar = createModel("radar.babylon",null,null,1,1,1,2);
         cow = createModel("cow.babylon",null,null,1,1,1,7);
         helipad = createModel("helipad.babylon",null,null,2,1,2,1);
         oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,1);
         palmTree = createModel("palmTree.babylon",null,null,1.5,1,1.5,10);
-        tree = createModel("tree.babylon",null,null,1.5,1,1.5,50);
+        tree = createModel("tree.babylon",null,null,1.5,1,1.5,150);
         rocks1 = createModel("rocks1.babylon",null,null,1,1,1,3);
         rocks2 = createModel("rocks2.babylon",null,null,1,1,1,3);
         barrel = createModel("barrel.babylon",null,null,1,1,1,6);
@@ -166,6 +172,7 @@ function Game() {
                     applyTankMovements();
                     checkRays(tank);
                     fire();
+                    HUD();
                 }
             });
         }
@@ -252,6 +259,60 @@ function Game() {
         }
     }
 
+    function createBustedTank() {
+        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "bustedTank.babylon", scene, onSuccess);
+        function onSuccess(newMeshes, particles, skeletons) {
+            bustedTank = newMeshes[0];
+            bustedTank.position.x = tank.position.x;
+            bustedTank.position.z = tank.position.z;
+            bustedTank.checkCollisions = true;
+            bustedTank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            bustedTank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            bustedTank.applyGravity = true;
+            return bustedTank;
+        }
+    }
+
+    function createModel(modelName,materialName,modelColor,scaleX,scaleY,scaleZ,num) {
+        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", modelName, scene, onSuccess);
+        function onSuccess(newMeshes, particles, skeletons) {
+            var model = [];
+            model[0] = newMeshes[0];
+            if(materialName) {
+                var modelMaterial = new BABYLON.StandardMaterial(materialName, scene);
+                modelMaterial.diffuseColor = modelColor;
+                model[0].material = modelMaterial;
+            }
+            model[0].checkCollisions = true;
+            model[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            model[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            model[0].applyGravity = true;
+            if(modelName === "cow.babylon") {
+                model[0].checkCollisions = false;
+            }
+
+            model = clone(model[0],num);
+            for(var i=0;i<model.length;i++) {
+                var scale = Math.random()*4.5+0.5;
+                model[i].scaling.x*=(scaleX);
+                model[i].scaling.y*=(scaleY);
+                model[i].scaling.z*=(scaleZ);
+            }
+            for(var n=1;n<model.length;n++) {
+                model[n].position.x += (Math.random() * (200 + 200) - 200);
+                model[n].position.z += (Math.random() * (200 + 200) - 200);
+            }
+            return model;
+        }
+    }
+
+    function clone(model,num){
+        var clones = [];
+        for(var i=0;i<num;i++)
+            clones.push(model.clone("clone_" + i));
+        return clones;
+    }
+
     function applyTankMovements() {
         if (isWPressed) {
             tank.moveWithCollisions(tank.frontVector);
@@ -269,175 +330,6 @@ function Game() {
         tank.frontVector.x = Math.sin(tank.rotation.y) * -1;
         tank.frontVector.z = Math.cos(tank.rotation.y) * -1;
         tank.frontVector.y = -4; // adding a bit of gravity
-    }
-
-    function createCactus() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "cactus.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            cactus = newMeshes[0];
-            var cactusMaterial = new BABYLON.StandardMaterial("cactusMat", scene);
-            cactusMaterial.diffuseColor = new BABYLON.Color3(.26, .65, .36);
-            cactus.material = cactusMaterial;
-            cactus.position.x += 50;
-            cactus.scaling.x *=.5;
-            cactus.scaling.z *=.5;
-            cactus.checkCollisions = true;
-            cactus.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            cactus.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            cactus.applyGravity = true;
-            return cactus;
-        }
-    }
-
-    function createRadar() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "radar.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            radar = newMeshes[0];
-            radar.position.x += 20;
-            radar.position.z += 100;
-            radar.checkCollisions = true;
-            radar.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            radar.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            radar.applyGravity = true;
-            return radar;
-        }
-    }
-
-    function createCow() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "cow.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            cow = newMeshes[0];
-            cow.position.x -= 20;
-            cow.position.z += 15;
-            cow.checkCollisions = true;
-            cow.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            cow.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            cow.applyGravity = true;
-            return cow;
-        }
-    }
-
-    function createBustedTank() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "bustedTank.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            bustedTank = newMeshes[0];
-            bustedTank.position.x -= 50;
-            bustedTank.position.z += 5;
-            bustedTank.checkCollisions = true;
-            bustedTank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            bustedTank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            bustedTank.applyGravity = true;
-            return bustedTank;
-        }
-    }
-
-    function createHelipad() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "helipad.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            helipad = newMeshes[0];
-            helipad.position.x += 100;
-            helipad.position.z += 62;
-            helipad.scaling.x *=2;
-            helipad.scaling.z *=2;
-            helipad.checkCollisions = true;
-            helipad.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            helipad.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            helipad.applyGravity = true;
-            return helipad;
-        }
-    }
-
-    function createOilStorage() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "oilStorage.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            oilStorage = newMeshes[0];
-            oilStorage.position.x += 10;
-            oilStorage.position.z -= 100;
-            oilStorage.scaling.x *=3;
-            oilStorage.scaling.z *=3;
-            oilStorage.checkCollisions = true;
-            oilStorage.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            oilStorage.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            oilStorage.applyGravity = true;
-            return oilStorage;
-        }
-    }
-
-    function createPalmTree() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "palmTree.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            palmTree = newMeshes[0];
-            palmTree.position.x += 30;
-            palmTree.position.z -= 100;
-            palmTree.scaling.x *=1.5;
-            palmTree.scaling.z *=1.5;
-            palmTree.checkCollisions = true;
-            palmTree.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            palmTree.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            palmTree.applyGravity = true;
-            return palmTree;
-        }
-    }
-
-    function createTree() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "tree.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            tree = newMeshes[0];
-            tree.position.x -= 75;
-            tree.position.z -= 75;
-            tree.scaling.x *=1.5;
-            tree.scaling.z *=1.5;
-            tree.checkCollisions = true;
-            tree.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            tree.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            tree.applyGravity = true;
-            return tree;
-        }
-    }
-
-    function createRocks1() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "rocks1.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            rocks1 = newMeshes[0];
-            rocks1.position.x += 75;
-            rocks1.position.z -= 75;
-            //rocks1.scaling.x *=1.5;
-            //rocks1.scaling.z *=1.5;
-            rocks1.checkCollisions = true;
-            rocks1.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            rocks1.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            rocks1.applyGravity = true;
-            return rocks1;
-        }
-    }
-
-    function createRocks2() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "rocks2.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            rocks2 = newMeshes[0];
-            rocks2.position.x += 65;
-            rocks2.position.z -= 75;
-            rocks2.checkCollisions = true;
-            rocks2.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            rocks2.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            rocks2.applyGravity = true;
-            return rocks2;
-        }
-    }
-
-    function createBarrel() {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "barrel.babylon", scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            barrel = newMeshes[0];
-            barrel.position.x += 10;
-            barrel.position.z -= 10;
-            barrel.checkCollisions = true;
-            barrel.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            barrel.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            barrel.applyGravity = true;
-            isPickable = true;
-            return barrel;
-        }
     }
 
     function fire() {
@@ -497,40 +389,23 @@ function Game() {
         }
     }
 
-    function createModel(modelName,materialName,modelColor,scaleX,scaleY,scaleZ,num) {
-        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", modelName, scene, onSuccess);
-        function onSuccess(newMeshes, particles, skeletons) {
-            var model = [];
-            model[0] = newMeshes[0];
-            if(materialName) {
-                var modelMaterial = new BABYLON.StandardMaterial(materialName, scene);
-                modelMaterial.diffuseColor = modelColor;
-                model[0].material = modelMaterial;
-            }
-            model[0].checkCollisions = true;
-            model[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            model[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            model[0].applyGravity = true;
-
-            model = clone(model[0],num);
-            for(var i=0;i<model.length;i++) {
-                var scale = Math.random()*4.5+0.5;
-                model[i].scaling.x*=(scaleX);
-                model[i].scaling.y*=(scaleY);
-                model[i].scaling.z*=(scaleZ);
-            }
-            for(var i=1;i<model.length;i++) {
-                model[i].position.x += (Math.random() * (200 + 200) - 200);
-                model[i].position.z += (Math.random() * (200 + 200) - 200);
-            }
-            return model;
-        }
+    function clamp(num, min, max) {
+        if(num >= max)
+            return num = max;
+        else if(num <= min)
+            return num = min;
+        else
+            return num;
     }
 
-    function clone(model,num){
-        var clones = [];
-        for(var i=0;i<num;i++)
-            clones.push(model.clone("clone_" + i));
-        return clones;
+    function HUD() {
+        if(health1 === 0) {
+            console.log("Player 2 wins");
+            bustedTank1 = createBustedTank();
+        }
+        /*if(health2 === 0) {
+            console.log("Player 1 wins");
+            bustedTank2 = createBustedTank();
+        }*/
     }
 }
