@@ -119,17 +119,17 @@ function Game() {
         var skybox = createSkybox();
 
         tank = createTank("tank1.babylon");
-        cactus = createCactus();
-        radar = createRadar();
-        cow = createCow();
-        bustedTank = createBustedTank();
-        helipad = createHelipad();
-        oilStorage = createOilStorage();
-        palmTree = createPalmTree();
-        tree = createTree();
-        rocks1 = createRocks1();
-        rocks2 = createRocks2();
-        barrel = createBarrel();
+        //bustedTank = createBustedTank();
+
+        cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,15);
+        cow = createModel("cow.babylon",null,null,1,1,1,7);
+        helipad = createModel("helipad.babylon",null,null,2,1,2,1);
+        oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,1);
+        palmTree = createModel("palmTree.babylon",null,null,1.5,1,1.5,10);
+        tree = createModel("tree.babylon",null,null,1.5,1,1.5,50);
+        rocks1 = createModel("rocks1.babylon",null,null,1,1,1,3);
+        rocks2 = createModel("rocks2.babylon",null,null,1,1,1,3);
+        barrel = createModel("barrel.babylon",null,null,1,1,1,6);
 
         waitForIt();
     }
