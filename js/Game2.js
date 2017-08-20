@@ -4,7 +4,6 @@ function Game() {
     var canvas;
     var engine;
     var scene;
-    var cameraWrapper;
 
     var tank;
     var bullet;
@@ -157,8 +156,6 @@ function Game() {
             followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
             followCamera.checkCollisions = true;
 
-            cameraWrapper = BABYLON.Mesh.CreateBox("cameraWrapper", 2, scene);
-
             /*var freeCamera = createFreeCamera();
             scene.activeCamera = freeCamera;
             scene.collisionsEnabled = true;
@@ -168,11 +165,6 @@ function Game() {
             freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
             freeCamera.checkCollisions = true;
             console.log("isCPressed: " + isCPressed);*/
-
-            scene.registerBeforeRender(function () {
-                cameraWrapper.position = followCamera.position;
-                cameraWrapper.rotation = followCamera.rotation;
-            });
 
             engine.runRenderLoop(function() {
                 scene.render();
@@ -407,10 +399,6 @@ function Game() {
     }
 
     function HUD() {
-        var boxButton = BABYLON.Mesh.CreatePlane("boxButton", 0.5, scene);
-        boxButton.position = new BABYLON.Vector3(-2, -2, 6);
-        boxButton.parent = cameraWrapper;
-
         if(health1 === 0) {
             console.log("Player 2 wins");
             bustedTank1 = createBustedTank();
@@ -420,5 +408,4 @@ function Game() {
             bustedTank2 = createBustedTank();
         }*/
     }
-
 }
