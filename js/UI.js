@@ -4,13 +4,13 @@ function UI() {
     document.getElementById("InstructionsCanvas").style.display = "none";
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
+    document.getElementById("player1").style.display = "none";
+    document.getElementById("player2").style.display = "none";
 
     document.getElementById("UICanvas").style.display = "inline";
 
     var canvas = document.getElementById("UICanvas");
     var context = canvas.getContext("2d");
-    var width = canvas.width;
-    var height = canvas.height;
     var bgImage = new Image();
 
     bgImage.onload = function(){
