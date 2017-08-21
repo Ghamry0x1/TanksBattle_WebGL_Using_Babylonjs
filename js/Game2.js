@@ -1,10 +1,11 @@
 var sceneNum = 0;
+
 function Game() {
     /*Variables*/
     var canvas;
     var engine;
     var scene;
-    var cameraWrapper;
+    var followCamera;
 
     var tank;
     var bullet;
@@ -20,6 +21,15 @@ function Game() {
     var rocks2 = [];
     var barrel = [];
 
+    /*var plane;
+    var healthBar;
+    var healthBarContainer;
+    var health1;*/
+    var bar1;
+    var bar2;
+    var health1 = 100;
+    var health2 = 100;
+
     var isWPressed = false;
     var isAPressed = false;
     var isSPressed = false;
@@ -30,9 +40,6 @@ function Game() {
 
     var isPickable = true;
     var isTankReady = false;
-
-    var health1 = 100;
-    var greenValue = 255;
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -78,6 +85,8 @@ function Game() {
         }
     });
 
+    /*GameStart*/
+    HUD();
     createScene();
 
     /*Functions*/
@@ -148,7 +157,7 @@ function Game() {
 
     function waitForIt(){
         if (isTankReady) {
-            var followCamera = createFollowCamera();
+            followCamera = createFollowCamera();
             scene.activeCamera = followCamera;
             scene.collisionsEnabled = true;
 
@@ -156,8 +165,6 @@ function Game() {
             followCamera.applyGravity = true;
             followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
             followCamera.checkCollisions = true;
-
-            cameraWrapper = BABYLON.Mesh.CreateBox("cameraWrapper", 2, scene);
 
             /*var freeCamera = createFreeCamera();
             scene.activeCamera = freeCamera;
@@ -169,18 +176,13 @@ function Game() {
             freeCamera.checkCollisions = true;
             console.log("isCPressed: " + isCPressed);*/
 
-            scene.registerBeforeRender(function () {
-                cameraWrapper.position = followCamera.position;
-                cameraWrapper.rotation = followCamera.rotation;
-            });
-
             engine.runRenderLoop(function() {
                 scene.render();
                 if(tank) {
                     applyTankMovements();
                     checkRays(tank);
                     fire();
-                    HUD();
+                    //HUD();
                 }
             });
         }
@@ -295,6 +297,7 @@ function Game() {
             model[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
             model[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
             model[0].applyGravity = true;
+
             if(modelName === "cow.babylon") {
                 model[0].checkCollisions = false;
             }
@@ -331,10 +334,12 @@ function Game() {
         }
         if (isDPressed) {
             tank.rotation.y += .1 * tank.rotationSensitivity;
+            //plane.rotation.y += .1 * tank.rotationSensitivity;
         }
-        if (isAPressed)
+        if (isAPressed) {
             tank.rotation.y -= .1 * tank.rotationSensitivity;
-
+            //plane.rotation.y -= .1 * tank.rotationSensitivity;
+        }
         tank.frontVector.x = Math.sin(tank.rotation.y) * -0.1;
         tank.frontVector.z = Math.cos(tank.rotation.y) * -0.1;
         tank.frontVector.y = -4; // adding a bit of gravity
@@ -397,28 +402,76 @@ function Game() {
         }
     }
 
-    function clamp(num, min, max) {
-        if(num >= max)
-            return num = max;
-        else if(num <= min)
-            return num = min;
-        else
-            return num;
-    }
-
     function HUD() {
-        var boxButton = BABYLON.Mesh.CreatePlane("boxButton", 0.5, scene);
-        boxButton.position = new BABYLON.Vector3(-2, -2, 6);
-        boxButton.parent = cameraWrapper;
+        document.getElementById("player1").style.display = "inline";
+        document.getElementById("player2").style.display = "inline";
+        document.getElementById("bar1").style.display = "inline";
 
-        if(health1 === 0) {
-            console.log("Player 2 wins");
-            bustedTank1 = createBustedTank();
-        }
-        /*if(health2 === 0) {
-            console.log("Player 1 wins");
-            bustedTank2 = createBustedTank();
-        }*/
+        bar1 = document.getElementById("bar1").getContext("2d");
+        drawHealthbar(bar1,10,10,200,20,health1,100);
     }
+
+    function drawHealthbar(canvas,x,y,width,height,health,max_health){
+        if(health >= max_health){
+            health = max_health;
+        }
+        else if(health <= 0){
+            health = 0;
+        }
+        canvas.fillStyle = '#ffffff';
+        canvas.fillRect(x,y,width,height);
+
+        var colorNumber = Math.round((1-(health/max_health))*0xff)*0x10000+Math.round((health/max_health)*0xff)*0x100;
+        var colorString = colorNumber.toString(16);
+        if (colorNumber >= 0x100000){
+            canvas.fillStyle = '#'+colorString;
+        }else if (colorNumber << 0x100000 && colorNumber >= 0x10000){
+            canvas.fillStyle = '#0'+colorString;
+        }else if (colorNumber << 0x10000){
+            canvas.fillStyle = '#00'+colorString;
+        }
+        canvas.fillRect(x+1,y+1,(health/max_health)*(width-2),height-2);
+    }
+
+    /*function createHealthBar() {
+        plane = BABYLON.MeshBuilder.CreatePlane("plane", {width:1000, height:1000, subdivisions:4}, scene);
+        plane.position = tank.position;
+        plane.isVisible = false;
+
+        var healthBarMaterial = new BABYLON.StandardMaterial("hb1mat", scene);
+        healthBarMaterial.diffuseColor = new BABYLON.Color3.Green();
+        healthBarMaterial.backFaceCulling = false;
+
+        var healthBarContainerMaterial = new BABYLON.StandardMaterial("hb2mat", scene);
+        healthBarContainerMaterial.diffuseColor = new BABYLON.Color3.Red();
+        healthBarContainerMaterial.backFaceCulling = false;
+
+        healthBar = BABYLON.MeshBuilder.CreatePlane("hb1", {width:3, height:.2, subdivisions:4}, scene);
+        healthBarContainer = BABYLON.MeshBuilder.CreatePlane("hb2", {width:3, height:.2, subdivisions:4}, scene);
+
+        healthBar.position = new BABYLON.Vector3(0, 0, -.01);           //Move in front of container slightly. Without this there is flickering.
+        healthBarContainer.position = new BABYLON.Vector3(0, 2.1, 0);     //Position above player.
+
+        healthBar.parent = healthBarContainer;
+        healthBarContainer.parent = plane;
+
+        healthBar.material = healthBarMaterial;
+        healthBarContainer.material = healthBarContainerMaterial;
+
+        healthBarContainer.rotation.y = Math.PI;
+        healthBar.rotation.y = Math.PI;
+    }
+
+    function updateHealth() {
+        if(health1 > 0) {
+            healthBar.scaling.x = health1 / 100;
+            healthBar.position.x = ((15 - ((health1 / 200) * 15)) * -1) + ((health1 / 200) * 15);
+        }
+        else {
+            health1 = 0;
+            healthBar.scaling.x = health1 / 100;
+            healthBar.position.x = ((15 - ((health1 / 200) * 15)) * -1) + ((health1 / 200) * 15);
+        }
+    }*/
 
 }
