@@ -414,7 +414,6 @@ function Game() {
         var minx = 10000; var miny = 10000; var minz = 10000; var maxx = -10000; var maxy = -10000; var maxz = -10000;
 
         for (var i = 0 ; i < newMeshes.length ; i++) {
-
             var positions = new BABYLON.VertexData.ExtractFromGeometry(newMeshes[i]).positions;
             // newMeshes[i].checkCollisions = true;
             if (!positions) continue;
@@ -441,7 +440,6 @@ function Game() {
                 if (positions[j] > maxz)
                     maxz = positions[j];
             }
-
         }
 
         var _lengthX = (minx * maxx > 1) ? Math.abs(maxx - minx) : Math.abs(minx * -1 + maxx);
@@ -461,9 +459,7 @@ function Game() {
         _boxMesh.isVisible = true;
         _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
 
-
         return { min: { x: minx, y: miny, z: minz }, max: { x: maxx, y: maxy, z: maxz }, lengthX: _lengthX, lengthY: _lengthY, lengthZ: _lengthZ, center: _center, boxMesh: _boxMesh };
-
     }
 
     function fire(tankID) {
