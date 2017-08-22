@@ -10,7 +10,7 @@ function Game() {
 
     var assetsManager;
     var shadowGenerator;
-    var movementLimit=0;
+    var movementLimit = 0;
 
     var currentTank = 0;
     var followCamera;
@@ -41,10 +41,14 @@ function Game() {
     var isPickable = true;
     var isTankReady = false;
 
-/*--------------------------------------------------------------------------------------------------------------------*/
+    var bar;
+    var health1;
+    var health2;
+
+    /*--------------------------------------------------------------------------------------------------------------------*/
 
     //Listeners
-    document.addEventListener("keyup", function() {
+    document.addEventListener("keyup", function () {
         if (event.key == 'a' || event.key == 'A') {
             isAPressed = false;
         }
@@ -57,17 +61,19 @@ function Game() {
         if (event.key == 'w' || event.key == 'W') {
             isWPressed = false;
         }
-        if(event.key == 'f' || event.key =='F') {
+        if (event.key == 'f' || event.key == 'F') {
             isFPressed = false;
-            setTimeout(function(){switchTanks();},1500);
+            setTimeout(function () {
+                switchTanks();
+            }, 1500);
         }
-        if(event.key == 'r' || event.key =='R') {
+        if (event.key == 'r' || event.key == 'R') {
             isRPressed = false;
         }
         //if(event.key == 'g' || event.key =='G')
-          //  switchTanks();
+        //  switchTanks();
     });
-    document.addEventListener("keydown", function() {
+    document.addEventListener("keydown", function () {
         if (event.key == 'a' || event.key == 'A') {
             isAPressed = true;
         }
@@ -80,17 +86,17 @@ function Game() {
         if (event.key == 'w' || event.key == 'W') {
             isWPressed = true;
         }
-        if(event.key == 'f' || event.key =='F') {
+        if (event.key == 'f' || event.key == 'F') {
             isFPressed = true;
         }
-        if(event.key == 'r' || event.key =='R') {
+        if (event.key == 'r' || event.key == 'R') {
             isRPressed = true;
         }
     });
 
     /*GameStart*/
-    HUD();
     createScene();
+    HUD();
 
     /*Functions*/
     function createSandScene() {
@@ -107,20 +113,24 @@ function Game() {
         light = createLight();
         var skybox = createSkybox();
 
-        createTank("tank1.babylon",2);
+        createTank("tank1.babylon", 2);
         //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
+        health1 = 100;
+        health2 = 100;
+        health1.parent = tank[0];
+        health2.parent = tank[1];
 
-        cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,10);
-        radar = createModel("radar.babylon",null,null,1,1,1,2);
-        cow = createModel("cow.babylon",null,null,1,1,1,20);
-        helipad = createModel("helipad.babylon",null,null,2,1,2,3);
-        oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,2);
-        palmTree = createModel("palmTree.babylon",null,null,1.5,1,1.5,10);
-        tree = createModel("tree.babylon",null,null,1.5,1,1.5,10);
-        rocks1 = createModel("rocks1.babylon",null,null,1,1,1,5);
-        rocks2 = createModel("rocks2.babylon",null,null,1,1,1,5);
-        barrel = createModel("barrel.babylon",null,null,1,1,1,10);
+        cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
+        radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
+        cow = createModel("cow.babylon", null, null, 1, 1, 1, 20);
+        helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 3);
+        oilStorage = createModel("oilStorage.babylon", null, null, 3, 1, 3, 2);
+        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 10);
+        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 10);
+        rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 5);
+        rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 5);
+        barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 10);
 
         waitForIt();
     }
@@ -141,109 +151,124 @@ function Game() {
         light = createLight(1);
         var skybox = createSkybox();
 
-        createTank("tank1.babylon",1);
-        createTank("tank2.babylon",1);
+        createTank("tank1.babylon", 1);
+        createTank("tank2.babylon", 1);
         //bustedTank = createBustedTank();
 
-        cactus = createModel("cactus.babylon","cactusMaterial",new BABYLON.Color3(.3,.7,.2),.5,1,.5,10);
-        radar = createModel("radar.babylon",null,null,1,1,1,2);
-        cow = createModel("cow.babylon",null,null,1,1,1,20);
-        helipad = createModel("helipad.babylon",null,null,2,1,2,3);
-        oilStorage = createModel("oilStorage.babylon",null,null,3,1,3,2);
-        palmTree = createModel("palmTree.babylon",null,null,1.5,1,1.5,10);
-        tree = createModel("tree.babylon",null,null,1.5,1,1.5,10);
-        rocks1 = createModel("rocks1.babylon",null,null,1,1,1,5);
-        rocks2 = createModel("rocks2.babylon",null,null,1,1,1,5);
-        barrel = createModel("barrel.babylon",null,null,1,1,1,10);
+        cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
+        radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
+        cow = createModel("cow.babylon", null, null, 1, 1, 1, 20);
+        helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 3);
+        oilStorage = createModel("oilStorage.babylon", null, null, 3, 1, 3, 2);
+        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 10);
+        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 10);
+        rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 5);
+        rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 5);
+        barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 10);
 
         waitForIt();
     }
 
     function createScene() {
-        if(sceneNum === 0) { createSandScene(); }
-        else if(sceneNum === 1) { createFogScene(); }
+        if (sceneNum === 0) {
+            createSandScene();
+        }
+        else if (sceneNum === 1) {
+            createFogScene();
+        }
     }
 
-    function createAssetsManager(){
-        if(scene){
+    function createAssetsManager() {
+        if (scene) {
             assetsManager = new BABYLON.AssetsManager(scene);
         }
-        else { setTimeout(function(){createAssetsManager();},300); }
+        else {
+            setTimeout(function () {
+                createAssetsManager();
+            }, 300);
+        }
     }
 
-    function loadAssetsManager(){
-        if(assetsManager){
+    function loadAssetsManager() {
+        if (assetsManager) {
             assetsManager.load();
         }
-        else { setTimeout(function(){},300); }
+        else {
+            setTimeout(function () {
+            }, 300);
+        }
     }
 
-    function switchTanks(){
-        if(currentTank===0) {
+    function switchTanks() {
+        if (currentTank === 0) {
             currentTank = 1;
             followCamera.lockedTarget = tank[1];
-            movementLimit=0;
-            turnTimer=0;
+            movementLimit = 0;
+            turnTimer = 0;
         }
-        else if(currentTank===1) {
+        else if (currentTank === 1) {
             currentTank = 0;
             followCamera.lockedTarget = tank[0];
-            movementLimit=0;
-            turnTimer=0;
+            movementLimit = 0;
+            turnTimer = 0;
         }
     }
 
-    function createShadow(){  //not used yet
-        if(light && tank[0] && tank[1] && ground){
+    function createShadow() {  //not used yet
+        if (light && tank[0] && tank[1] && ground) {
             shadowGenerator = new BABYLON.ShadowGenerator(100, light);
             shadowGenerator.getShadowMap().renderList.push(tank[0]);
             shadowGenerator.getShadowMap().renderList.push(tank[1]);
             ground.receiveShadows = true;
         }
-        else { setTimeout(function(){createShadow();},300); }
+        else {
+            setTimeout(function () {
+                createShadow();
+            }, 300);
+        }
     }
 
-    function waitForIt(){
-            console.log("wait for it");
-            loadAssetsManager();
+    function waitForIt() {
+        console.log("wait for it");
+        loadAssetsManager();
 
-            followCamera = createFollowCamera(currentTank);
-            scene.activeCamera = followCamera;
-            scene.collisionsEnabled = true;
+        followCamera = createFollowCamera(currentTank);
+        scene.activeCamera = followCamera;
+        scene.collisionsEnabled = true;
 
-            followCamera.attachControl(canvas);
-            followCamera.applyGravity = true;
-            followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            followCamera.checkCollisions = true;
+        followCamera.attachControl(canvas);
+        followCamera.applyGravity = true;
+        followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        followCamera.checkCollisions = true;
 
-            /*var freeCamera = createFreeCamera();
-            scene.activeCamera = freeCamera;
-            scene.collisionsEnabled = true;
+        /*var freeCamera = createFreeCamera();
+        scene.activeCamera = freeCamera;
+        scene.collisionsEnabled = true;
 
-            freeCamera.attachControl(canvas);
-            freeCamera.applyGravity = true;
-            freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            freeCamera.checkCollisions = true;*/
+        freeCamera.attachControl(canvas);
+        freeCamera.applyGravity = true;
+        freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        freeCamera.checkCollisions = true;*/
 
-            assetsManager.onFinish = function (tasks) {
-                engine.runRenderLoop(function () {
-                    scene.render();
-                    if(!followCamera.lockedTarget)
-                        followCamera.lockedTarget = tank[currentTank];
-                    turnTimer++;
-                    if(turnTimer===500)
-                        switchTanks();
-                    if (movementLimit < 300)
-                        applyTankMovements(currentTank);
+        assetsManager.onFinish = function (tasks) {
+            engine.runRenderLoop(function () {
+                scene.render();
+                if (!followCamera.lockedTarget)
+                    followCamera.lockedTarget = tank[currentTank];
+                turnTimer++;
+                if (turnTimer === 500)
+                    switchTanks();
+                if (movementLimit < 300)
+                    applyTankMovements(currentTank);
 
-                    checkRays(tank[currentTank]);
-                    fire(currentTank);
-                });
-            };
+                checkRays(tank[currentTank]);
+                fire(currentTank);
+            });
+        };
     }
 
     function createFreeCamera(scene) {
-        var camera = new BABYLON.FreeCamera("c1",new BABYLON.Vector3(0, 10, 0), scene);
+        var camera = new BABYLON.FreeCamera("c1", new BABYLON.Vector3(0, 10, 0), scene);
         camera.keysUp.push('w'.charCodeAt(0));
         camera.keysUp.push('W'.charCodeAt(0));
         camera.keysDown.push('s'.charCodeAt(0));
@@ -257,8 +282,8 @@ function Game() {
     }
 
     function createLight(flag) {
-        var hemisphericlight = new BABYLON.HemisphericLight ("l1", new BABYLON.Vector3(0, 5, 0), scene);
-        if(flag === 1) {
+        var hemisphericlight = new BABYLON.HemisphericLight("l1", new BABYLON.Vector3(0, 5, 0), scene);
+        if (flag === 1) {
             hemisphericlight.intensity = .3;
         }
         return hemisphericlight;
@@ -274,6 +299,7 @@ function Game() {
             ground.material = groundMaterial;
             ground.checkCollisions = true;
         }
+
         return ground;
     }
 
@@ -305,14 +331,14 @@ function Game() {
         return camera;
     }
 
-    function createTank(assetName,num) {
+    function createTank(assetName, num) {
         var tankTask = assetsManager.addMeshTask("tank task", "", "GameObjects/", assetName);
         tankTask.onSuccess = function (task) {
             console.log("createTank called");
             var newMeshes = task.loadedMeshes;
             tank[0] = newMeshes[0];
             //tank.position.y += 20;
-            tank[0].position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
+            tank[0].position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
             tank[0].checkCollisions = true;
             tank[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
             tank[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
@@ -320,14 +346,14 @@ function Game() {
             tank[0].frontVector = new BABYLON.Vector3(0, 0, -1);
             tank[0].rotationSensitivity = .05;
 
-            tank = clone(tank[0],num);
+            tank = clone(tank[0], num);
 
-            setTimeout(function(){
-                for(var i = 0; i<tank.length;i++){
-                    var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes , scene);
+            setTimeout(function () {
+                for (var i = 0; i < tank.length; i++) {
+                    var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene);
                     tank[i].bounder = boundingBox.boxMesh;
                     tank[i].bounder.tank = tank[i];
-                    tank[i].bounder.ellipsoidOffset.y += 3    ; // if I make this += 10 , no collision happens (better performance), but they merge
+                    tank[i].bounder.ellipsoidOffset.y += 3; // if I make this += 10 , no collision happens (better performance), but they merge
                     // if I make it +=2 , they are visually good, but very bad performance (actually bad performance when I console.log in the onCollide)
                     // if I make it += 1 , very very bad performance as it is constantly in collision with the ground
                     tank[i].position = tank[i].bounder.position;
@@ -336,7 +362,8 @@ function Game() {
                             console.log("koko");
                         }
                     }
-                }},300);
+                }
+            }, 300);
 
             isTankReady = true;
             console.log("returning tank of type " + typeof tank[0] + " and isTankReady = " + isTankReady);
@@ -355,23 +382,25 @@ function Game() {
         }
         if (isDPressed) {
             tank[tankID].rotation.y += .1 * tank[tankID].rotationSensitivity;
+            tank[tankID].bounder.rotation.y += .1 * tank[tankID].rotationSensitivity;
         }
-        if (isAPressed)
+        if (isAPressed) {
             tank[tankID].rotation.y -= .1 * tank[tankID].rotationSensitivity;
-
+            tank[tankID].bounder.rotation.y -= .1 * tank[tankID].rotationSensitivity;
+        }
         tank[tankID].frontVector.x = Math.sin(tank[tankID].rotation.y) * -0.1;
         tank[tankID].frontVector.z = Math.cos(tank[tankID].rotation.y) * -0.1;
         tank[tankID].frontVector.y = -4; // adding a bit of gravity
     }
 
-    function createModel(modelName,materialName,modelColor,x,y,z,num) {
+    function createModel(modelName, materialName, modelColor, x, y, z, num) {
         var modelTask = assetsManager.addMeshTask("model task", "", "GameObjects/", modelName);
         modelTask.onSuccess = function (task) {
             console.log("createModel called");
             var newMeshes = task.loadedMeshes;
             var model = [];
             model[0] = newMeshes[0];
-            if(materialName) {
+            if (materialName) {
                 var modelMaterial = new BABYLON.StandardMaterial(materialName, scene);
                 modelMaterial.diffuseColor = modelColor;
                 model[0].material = modelMaterial;
@@ -381,19 +410,19 @@ function Game() {
             model[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
             model[0].applyGravity = true;
 
-            if(modelName === "cow.babylon") {
+            if (modelName === "cow.babylon") {
                 model[0].checkCollisions = false;
             }
 
-            model = clone(model[0],num);
+            model = clone(model[0], num);
             console.log(model.length);
-            for(var i=0;i<model.length;i++) {
-                var scale = Math.random()*4.5+0.5;
-                model[i].scaling.x*=(x);
-                model[i].scaling.y*=(y);
-                model[i].scaling.z*=(z);
+            for (var i = 0; i < model.length; i++) {
+                var scale = Math.random() * 4.5 + 0.5;
+                model[i].scaling.x *= (x);
+                model[i].scaling.y *= (y);
+                model[i].scaling.z *= (z);
             }
-            for(var i=0;i<model.length;i++) {
+            for (var i = 0; i < model.length; i++) {
                 model[i].position.x += (Math.random() * (200 + 200) - 200);
                 model[i].position.z += (Math.random() * (200 + 200) - 200);
 
@@ -402,24 +431,29 @@ function Game() {
         }
     }
 
-    function clone(model,num){
+    function clone(model, num) {
         var clones = [];
         clones.push(model);
-        for(var i=1;i<num;i++)
+        for (var i = 1; i < num; i++)
             clones.push(model.clone("clone_" + i));
         return clones;
     }
 
     function calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene) {
-        var minx = 10000; var miny = 10000; var minz = 10000; var maxx = -10000; var maxy = -10000; var maxz = -10000;
+        var minx = 10000;
+        var miny = 10000;
+        var minz = 10000;
+        var maxx = -10000;
+        var maxy = -10000;
+        var maxz = -10000;
 
-        for (var i = 0 ; i < newMeshes.length ; i++) {
+        for (var i = 0; i < newMeshes.length; i++) {
             var positions = new BABYLON.VertexData.ExtractFromGeometry(newMeshes[i]).positions;
             // newMeshes[i].checkCollisions = true;
             if (!positions) continue;
             var index = 0;
 
-            for (var j = index ; j < positions.length ; j += 3) {
+            for (var j = index; j < positions.length; j += 3) {
                 if (positions[j] < minx)
                     minx = positions[j];
                 if (positions[j] > maxx)
@@ -427,14 +461,14 @@ function Game() {
             }
             index = 1;
 
-            for (var j = index ; j < positions.length ; j += 3) {
+            for (var j = index; j < positions.length; j += 3) {
                 if (positions[j] < miny)
                     miny = positions[j];
                 if (positions[j] > maxy)
                     maxy = positions[j];
             }
             index = 2;
-            for (var j = index ; j < positions.length ; j += 3) {
+            for (var j = index; j < positions.length; j += 3) {
                 if (positions[j] < minz)
                     minz = positions[j];
                 if (positions[j] > maxz)
@@ -448,18 +482,26 @@ function Game() {
         var _center = new BABYLON.Vector3((minx + maxx) / 2.0, (miny + maxy) / 2.0, (minz + maxz) / 2.0);
 
         var _boxMesh = BABYLON.Mesh.CreateBox("tankbox", 1, scene);
-        _boxMesh.scaling.x = _lengthX/65 ;
-        _boxMesh.scaling.y = _lengthY/59;
-        _boxMesh.scaling.z = _lengthZ/95;
+        _boxMesh.scaling.x = _lengthX / 65;
+        _boxMesh.scaling.y = _lengthY / 59;
+        _boxMesh.scaling.z = _lengthZ / 95;
         //_boxMesh.position = newMeshes[0].position;
         //_boxMesh.position.y += .5; // if I increase this, the dude gets higher in the skyyyyy
         _boxMesh.checkCollisions = true;
         _boxMesh.material = new BABYLON.StandardMaterial("alpha", scene);
         _boxMesh.material.alpha = 0.5;
         _boxMesh.isVisible = true;
-        _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
+        _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
 
-        return { min: { x: minx, y: miny, z: minz }, max: { x: maxx, y: maxy, z: maxz }, lengthX: _lengthX, lengthY: _lengthY, lengthZ: _lengthZ, center: _center, boxMesh: _boxMesh };
+        return {
+            min: {x: minx, y: miny, z: minz},
+            max: {x: maxx, y: maxy, z: maxz},
+            lengthX: _lengthX,
+            lengthY: _lengthY,
+            lengthZ: _lengthZ,
+            center: _center,
+            boxMesh: _boxMesh
+        };
     }
 
     function fire(tankID) {
@@ -531,34 +573,34 @@ function Game() {
     }
 
     function HUD() {
+        /*NAMES*/
         document.getElementById("player1").style.display = "inline";
         document.getElementById("player2").style.display = "inline";
-        document.getElementById("bar1").style.display = "inline";
 
-        //bar1 = document.getElementById("bar1").getContext("2d");
-        //drawHealthbar(bar1,10,10,200,20,health1,100);
+        /*BARS*/
+        var container1 = document.getElementsByClassName("container1");
+        container1[0].style.display = "block";
+        var bar1 = document.getElementsByClassName("bar1");
+        bar1[0].style.display = "block";
+        var bar_fill1 = document.getElementsByClassName("bar-fill1");
+        bar_fill1[0].style.display = "block";
+
+        var container2 = document.getElementsByClassName("container2");
+        container2[0].style.display = "block";
+        var bar2 = document.getElementsByClassName("bar2");
+        bar2[0].style.display = "block";
+        var bar_fill2 = document.getElementsByClassName("bar-fill2");
+        bar_fill2[0].style.display = "block";
+
+        /*TIMER*/
+        //5mins timer f nos el shasha mslan da time el game
     }
-
-    /*function drawHealthbar(canvas,x,y,width,height,health,max_health){
-        if(health >= max_health){
-            health = max_health;
-        }
-        else if(health <= 0){
-            health = 0;
-        }
-        canvas.fillStyle = '#ffffff';
-        canvas.fillRect(x,y,width,height);
-
-        var colorNumber = Math.round((1-(health/max_health))*0xff)*0x10000+Math.round((health/max_health)*0xff)*0x100;
-        var colorString = colorNumber.toString(16);
-        if (colorNumber >= 0x100000){
-            canvas.fillStyle = '#'+colorString;
-        }else if (colorNumber << 0x100000 && colorNumber >= 0x10000){
-            canvas.fillStyle = '#0'+colorString;
-        }else if (colorNumber << 0x10000){
-            canvas.fillStyle = '#00'+colorString;
-        }
-        canvas.fillRect(x+1,y+1,(health/max_health)*(width-2),height-2);
-    }*/
-
 }
+
+
+
+
+
+
+
+
