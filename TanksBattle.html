@@ -2,74 +2,7 @@
 <html>
     <head>
         <title> Tanks Battle </title>
-        <style type="text/css">
-            html,
-            body,
-            #renderCanvas {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            #UICanvas {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            #CreditsCanvas {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            #InstructionsCanvas {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            #MapsCanvas {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            #player1 {
-                position: absolute;
-                margin: 0 auto;
-                z-index: 2;
-                color: white;
-                font-weight: bold;
-                font-size: 20px;
-                font-family: "Comic Sans MS";
-                left: 2%;
-                top: 3%;
-            }
-            #player2 {
-                position: absolute;
-                margin: 0 auto;
-                z-index: 2;
-                color: white;
-                font-weight: bold;
-                font-size: 20px;
-                font-family: "Comic Sans MS";
-                right: 2%;
-                top: 3%;
-            }
-            #bar1 {
-                position: absolute;
-                margin: 0 auto;
-                z-index: 2;
-                top: 7%;
-                left: 1%;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
         <script src="js/babylon.max.js"></script>
         <script src="js/cannon.max.js"></script>
         <script src="js/jquery-3.2.1.js"></script>
@@ -120,7 +53,15 @@
         <!-- HUD -->
         <div id="player1"> Player 1 </div>
         <div id="player2"> Player 2 </div>
-        <canvas id="bar1" width="640" height="480"></canvas>
-
+        <div class="container1">
+            <div class="bar1">
+                <span class="bar-fill1"></span>
+            </div>
+        </div>
+        <div class="container2">
+            <div class="bar2">
+                <span class="bar-fill2"></span>
+            </div>
+        </div>
     </body>
 </html>
