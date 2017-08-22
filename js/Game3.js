@@ -318,13 +318,27 @@ function Game() {
             tank[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
             tank[0].applyGravity = true;
             tank[0].frontVector = new BABYLON.Vector3(0, 0, -1);
-            tank[0].rotationSensitivity = .1;
+            tank[0].rotationSensitivity = .05;
+
             tank = clone(tank[0],num);
+
+            setTimeout(function(){
+                for(var i = 0; i<tank.length;i++){
+                    var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes , scene);
+                    tank[i].bounder = boundingBox.boxMesh;
+                    tank[i].bounder.tank = tank[i];
+                    tank[i].bounder.ellipsoidOffset.y += 3    ; // if I make this += 10 , no collision happens (better performance), but they merge
+                    // if I make it +=2 , they are visually good, but very bad performance (actually bad performance when I console.log in the onCollide)
+                    // if I make it += 1 , very very bad performance as it is constantly in collision with the ground
+                    tank[i].position = tank[i].bounder.position;
+                    tank[i].bounder.onCollide = function (mesh) {
+                        if (mesh.name == "ground") {
+                            console.log("koko");
+                        }
+                    }
+                }},300);
+
             isTankReady = true;
-
-            for(var i=1;i<tank.length;i++)
-                tank[i].position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
-
             console.log("returning tank of type " + typeof tank[0] + " and isTankReady = " + isTankReady);
         }
     }
@@ -345,8 +359,8 @@ function Game() {
         if (isAPressed)
             tank[tankID].rotation.y -= .1 * tank[tankID].rotationSensitivity;
 
-        tank[tankID].frontVector.x = Math.sin(tank[tankID].rotation.y) * -0.3;
-        tank[tankID].frontVector.z = Math.cos(tank[tankID].rotation.y) * -0.3;
+        tank[tankID].frontVector.x = Math.sin(tank[tankID].rotation.y) * -0.1;
+        tank[tankID].frontVector.z = Math.cos(tank[tankID].rotation.y) * -0.1;
         tank[tankID].frontVector.y = -4; // adding a bit of gravity
     }
 
@@ -394,6 +408,62 @@ function Game() {
         for(var i=1;i<num;i++)
             clones.push(model.clone("clone_" + i));
         return clones;
+    }
+
+    function calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene) {
+        var minx = 10000; var miny = 10000; var minz = 10000; var maxx = -10000; var maxy = -10000; var maxz = -10000;
+
+        for (var i = 0 ; i < newMeshes.length ; i++) {
+
+            var positions = new BABYLON.VertexData.ExtractFromGeometry(newMeshes[i]).positions;
+            // newMeshes[i].checkCollisions = true;
+            if (!positions) continue;
+            var index = 0;
+
+            for (var j = index ; j < positions.length ; j += 3) {
+                if (positions[j] < minx)
+                    minx = positions[j];
+                if (positions[j] > maxx)
+                    maxx = positions[j];
+            }
+            index = 1;
+
+            for (var j = index ; j < positions.length ; j += 3) {
+                if (positions[j] < miny)
+                    miny = positions[j];
+                if (positions[j] > maxy)
+                    maxy = positions[j];
+            }
+            index = 2;
+            for (var j = index ; j < positions.length ; j += 3) {
+                if (positions[j] < minz)
+                    minz = positions[j];
+                if (positions[j] > maxz)
+                    maxz = positions[j];
+            }
+
+        }
+
+        var _lengthX = (minx * maxx > 1) ? Math.abs(maxx - minx) : Math.abs(minx * -1 + maxx);
+        var _lengthY = (miny * maxy > 1) ? Math.abs(maxy - miny) : Math.abs(miny * -1 + maxy);
+        var _lengthZ = (minz * maxz > 1) ? Math.abs(maxz - minz) : Math.abs(minz * -1 + maxz);
+        var _center = new BABYLON.Vector3((minx + maxx) / 2.0, (miny + maxy) / 2.0, (minz + maxz) / 2.0);
+
+        var _boxMesh = BABYLON.Mesh.CreateBox("tankbox", 1, scene);
+        _boxMesh.scaling.x = _lengthX/65 ;
+        _boxMesh.scaling.y = _lengthY/59;
+        _boxMesh.scaling.z = _lengthZ/95;
+        //_boxMesh.position = newMeshes[0].position;
+        //_boxMesh.position.y += .5; // if I increase this, the dude gets higher in the skyyyyy
+        _boxMesh.checkCollisions = true;
+        _boxMesh.material = new BABYLON.StandardMaterial("alpha", scene);
+        _boxMesh.material.alpha = 0.5;
+        _boxMesh.isVisible = true;
+        _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1),0,Math.floor((Math.random() * 100) + 1));
+
+
+        return { min: { x: minx, y: miny, z: minz }, max: { x: maxx, y: maxy, z: maxz }, lengthX: _lengthX, lengthY: _lengthY, lengthZ: _lengthZ, center: _center, boxMesh: _boxMesh };
+
     }
 
     function fire(tankID) {
@@ -496,4 +566,3 @@ function Game() {
     }*/
 
 }
-
