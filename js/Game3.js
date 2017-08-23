@@ -1,6 +1,13 @@
 var sceneNum = 0;
 
 function Game() {
+    document.getElementById("UICanvas").style.display = "none";
+    document.getElementById("InstructionsCanvas").style.display = "none";
+    document.getElementById("CreditsCanvas").style.display = "none";
+    document.getElementById("MapsCanvas").style.display = "none";
+
+    document.getElementById("renderCanvas").style.display = "inline";
+
     /*Variables*/
     var canvas;
     var engine;
@@ -151,9 +158,13 @@ function Game() {
         light = createLight(1);
         var skybox = createSkybox();
 
-        createTank("tank1.babylon", 1);
-        createTank("tank2.babylon", 1);
+        createTank("tank1.babylon", 2);
+        //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
+        health1 = 100;
+        health2 = 100;
+        health1.parent = tank[0];
+        health2.parent = tank[1];
 
         cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
         radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
