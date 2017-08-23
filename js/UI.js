@@ -6,6 +6,8 @@ function UI() {
     document.getElementById("MapsCanvas").style.display = "none";
     document.getElementById("player1").style.display = "none";
     document.getElementById("player2").style.display = "none";
+    document.getElementById("timerContainer").style.display = "none";
+    document.getElementById("slider").style.display = "none";
 
     var container1 = document.getElementsByClassName("container1");
     container1[0].style.display = "none";

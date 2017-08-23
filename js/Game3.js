@@ -603,8 +603,21 @@ function Game() {
         var bar_fill2 = document.getElementsByClassName("bar-fill2");
         bar_fill2[0].style.display = "block";
 
+        /*ADS*/
+        document.getElementById("slider").style.display = "block";
+
         /*TIMER*/
-        //5mins timer f nos el shasha mslan da time el game
+        document.getElementById("timerContainer").style.display = "block";
+        var timer = document.getElementById("timer");
+        var sec = 180;
+        var countTime = setInterval(function() {
+            sec--;
+            timer.innerHTML = sec;
+            if(sec < 0) {
+                timer.innerHTML = "GameOver!";
+                clearInterval(countTime);
+            }
+        }, 1000);
     }
 }
 

@@ -25,6 +25,7 @@
 
                 document.getElementById("player1").style.display = "none";
                 document.getElementById("player2").style.display = "none";
+                document.getElementById("timerContainer").style.display = "none";
 
                 var container1 = document.getElementsByClassName("container1");
                 container1[0].style.display = "none";
@@ -60,6 +61,7 @@
 
                 document.getElementById("player1").style.display = "none";
                 document.getElementById("player2").style.display = "none";
+                document.getElementById("timerContainer").style.display = "none";
 
                 var container1 = document.getElementsByClassName("container1");
                 container1[0].style.display = "none";
@@ -95,6 +97,7 @@
 
                 document.getElementById("player1").style.display = "none";
                 document.getElementById("player2").style.display = "none";
+                document.getElementById("timerContainer").style.display = "none";
 
                 var container1 = document.getElementsByClassName("container1");
                 container1[0].style.display = "none";
@@ -130,6 +133,7 @@
 
                 document.getElementById("player1").style.display = "none";
                 document.getElementById("player2").style.display = "none";
+                document.getElementById("timerContainer").style.display = "none";
 
                 var container1 = document.getElementsByClassName("container1");
                 container1[0].style.display = "none";
@@ -188,6 +192,9 @@
                 document.getElementById("fogBtn").style.display = "none";
 
                 document.getElementById("renderCanvas").style.display = "inline";
+                document.getElementById("timerContainer").style.display = "block";
+                document.getElementById("slider").style.display = "block";
+
                 sceneNum = 0;
                 Game();
                 console.log("gotoSand called");
@@ -224,6 +231,9 @@
                 document.getElementById("fogBtn").style.display = "none";
 
                 document.getElementById("renderCanvas").style.display = "inline";
+                document.getElementById("timerContainer").style.display = "block";
+                document.getElementById("slider").style.display = "block";
+
                 sceneNum = 1;
                 Game();
                 console.log("gotoFog called");
@@ -248,10 +258,11 @@
                 <span class="bar-fill2"></span>
             </div>
         </div>
+        <div id="timerContainer">
+            <div id="timer">180</div>
+        </div>
 
-        <!-- ADS -->
-
-        <!-- BUTTONS -->\
+        <!-- BUTTONS -->
         <img alt="playBtn" src="images/play.png"
              style="height: 85px;width: 198px;top: 47%;left: 42%;position: absolute;" id="playBtn" onclick="gotoMaps()">
         <img alt="creditsBtn" src="images/credits.png"
@@ -264,5 +275,17 @@
              style="height: 185px;width: 265px;top: 33%;left: 28.6%;position: absolute;display: inline;" id="fogBtn" onclick="gotoFog()">
         <img alt="backBtn" src="images/back.png"
              style="height: 85px;width: 198px;top: 82%;left: 81%;position: absolute;" id="backBtn" onclick="gotoUI()">
+
+        <!-- ADS -->
+        <div id="slider" >
+            <figure>
+                <img src="images/France.jpg">
+                <img src="images/Ibiza.jpg">
+                <img src="images/Amsterdam.jpg">
+                <img src="images/France.jpg">
+                <img src="images/Amsterdam.jpg">
+            </figure>
+        </div>
+
     </body>
 </html>
