@@ -17,31 +17,216 @@
 
         <!-- SCRIPTS -->
         <script type="text/javascript">
-            function onclick(redirectCanvas) {
+            function gotoMaps() {
                 document.getElementById("renderCanvas").style.display = "none";
-                document.getElementById("InstructionsCanvas").style.display = "none";
-                document.getElementById("CreditsCanvas").style.display = "none";
-                document.getElementById("MapsCanvas").style.display = "none";
                 document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+
                 document.getElementById("player1").style.display = "none";
                 document.getElementById("player2").style.display = "none";
 
-                document.getElementById(redirectCanvas).style.display = "inline";
-                if(document.getElementById("UICanvas").style.display === "inline") {
-                    UI();
-                }
-                else if(document.getElementById("renderCanvas").style.display === "inline") {
-                    Game();
-                }
-                else if(document.getElementById("CreditsCanvas").style.display === "inline") {
-                    Credits();
-                }
-                else if(document.getElementById("InstructionsCanvas").style.display === "inline") {
-                    Instructions();
-                }
-                else if(document.getElementById("MapsCanvas").style.display === "inline") {
-                    Maps();
-                }
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+
+                document.getElementById("MapsCanvas").style.display = "inline";
+                document.getElementById("sandBtn").style.display = "inline";
+                document.getElementById("fogBtn").style.display = "inline";
+                document.getElementById("backBtn").style.display = "inline";
+
+                Maps();
+                console.log("gotoMaps called");
+            }
+            function gotoUI() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+
+                document.getElementById("player1").style.display = "none";
+                document.getElementById("player2").style.display = "none";
+
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("backBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+
+                document.getElementById("UICanvas").style.display = "inline";
+                document.getElementById("playBtn").style.display = "inline";
+                document.getElementById("instructionsBtn").style.display = "inline";
+                document.getElementById("creditsBtn").style.display = "inline";
+
+                UI();
+                console.log("gotoUI called");
+            }
+            function gotoCredits() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+
+                document.getElementById("player1").style.display = "none";
+                document.getElementById("player2").style.display = "none";
+
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+
+                document.getElementById("CreditsCanvas").style.display = "inline";
+                document.getElementById("backBtn").style.display = "inline";
+
+                Credits();
+                console.log("gotoCredits called");
+            }
+            function gotoInstructions() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+
+                document.getElementById("player1").style.display = "none";
+                document.getElementById("player2").style.display = "none";
+
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+
+                document.getElementById("InstructionsCanvas").style.display = "inline";
+                document.getElementById("backBtn").style.display = "inline";
+
+                Instructions();
+                console.log("gotoInstructions called");
+            }
+            function gotoSand() {
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+
+                document.getElementById("player1").style.display = "none";
+                document.getElementById("player2").style.display = "none";
+
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("backBtn").style.display = "none";
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+
+                document.getElementById("renderCanvas").style.display = "inline";
+                sceneNum = 0;
+                Game();
+                console.log("gotoSand called");
+            }
+            function gotoFog() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+
+                document.getElementById("player1").style.display = "none";
+                document.getElementById("player2").style.display = "none";
+
+                var container1 = document.getElementsByClassName("container1");
+                container1[0].style.display = "none";
+                var bar1 = document.getElementsByClassName("bar1");
+                bar1[0].style.display = "none";
+                var bar_fill1 = document.getElementsByClassName("bar-fill1");
+                bar_fill1[0].style.display = "none";
+
+                var container2 = document.getElementsByClassName("container2");
+                container2[0].style.display = "none";
+                var bar2 = document.getElementsByClassName("bar2");
+                bar2[0].style.display = "none";
+                var bar_fill2 = document.getElementsByClassName("bar-fill2");
+                bar_fill2[0].style.display = "none";
+
+                document.getElementById("backBtn").style.display = "none";
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+
+                document.getElementById("renderCanvas").style.display = "inline";
+                sceneNum = 1;
+                Game();
+                console.log("gotoFog called");
             }
         </script>
         <script src="js/Game3.js"></script>
@@ -63,5 +248,21 @@
                 <span class="bar-fill2"></span>
             </div>
         </div>
+
+        <!-- ADS -->
+
+        <!-- BUTTONS -->\
+        <img alt="playBtn" src="images/play.png"
+             style="height: 85px;width: 198px;top: 47%;left: 42%;position: absolute;" id="playBtn" onclick="gotoMaps()">
+        <img alt="creditsBtn" src="images/credits.png"
+             style="height: 85px;width: 198px;top: 79%;left: 42%;position: absolute;" id="creditsBtn" onclick="gotoCredits()">
+        <img alt="instructionsBtn" src="images/instructions.png"
+             style="height: 85px;width: 198px;top: 63%;left: 42%;position: absolute;" id="instructionsBtn" onclick="gotoInstructions()">
+        <img alt="sandBtn" src="images/sand.png"
+             style="height: 185px;width: 265px;top: 33%;left: 5%;position: absolute;display: inline;" id="sandBtn" onclick="gotoSand()">
+        <img alt="fogBtn" src="images/fog.png"
+             style="height: 185px;width: 265px;top: 33%;left: 28.6%;position: absolute;display: inline;" id="fogBtn" onclick="gotoFog()">
+        <img alt="backBtn" src="images/back.png"
+             style="height: 85px;width: 198px;top: 82%;left: 81%;position: absolute;" id="backBtn" onclick="gotoUI()">
     </body>
 </html>
