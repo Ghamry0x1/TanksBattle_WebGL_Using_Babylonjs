@@ -21,6 +21,10 @@ function UI() {
     var bar_fill2 = document.getElementsByClassName("bar-fill2");
     bar_fill2[0].style.display = "none";
 
+    document.getElementById("sandBtn").style.display = "none";
+    document.getElementById("fogBtn").style.display = "none";
+    document.getElementById("backBtn").style.display = "none";
+
     document.getElementById("UICanvas").style.display = "inline";
 
     var canvas = document.getElementById("UICanvas");
@@ -31,20 +35,4 @@ function UI() {
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/StartPage.png";
-
-    document.onmouseup = point_it;
-    function point_it(event) {
-        if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=314&&event.offsetY<=382)) {
-            console.log("play");
-            onclick("MapsCanvas");
-        }
-        if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=402&&event.offsetY<=472)) {
-            console.log("instructions");
-            onclick("InstructionsCanvas");
-        }
-        if((event.offsetX>=536&&event.offsetX<=802)&&(event.offsetY>=488&&event.offsetY<=558)) {
-            console.log("credits");
-            onclick("CreditsCanvas");
-        }
-    }
 }
