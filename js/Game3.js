@@ -493,9 +493,9 @@ function Game() {
         var _center = new BABYLON.Vector3((minx + maxx) / 2.0, (miny + maxy) / 2.0, (minz + maxz) / 2.0);
 
         var _boxMesh = BABYLON.Mesh.CreateBox("tankbox", 1, scene);
-        _boxMesh.scaling.x = _lengthX / 65;
+        _boxMesh.scaling.x = _lengthX / 85;
         _boxMesh.scaling.y = _lengthY / 59;
-        _boxMesh.scaling.z = _lengthZ / 95;
+        _boxMesh.scaling.z = _lengthZ / 99;
         //_boxMesh.position = newMeshes[0].position;
         //_boxMesh.position.y += .5; // if I increase this, the dude gets higher in the skyyyyy
         _boxMesh.checkCollisions = true;
