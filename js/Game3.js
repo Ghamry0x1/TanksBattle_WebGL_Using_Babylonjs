@@ -48,9 +48,10 @@ function Game() {
     var isPickable = true;
     var isTankReady = false;
 
-    var bar;
     var health1;
     var health2;
+
+    var gameOver = 0;
 
     /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -211,15 +212,15 @@ function Game() {
     }
 
     function switchTanks() {
-        if (currentTank === 0) {
-            currentTank = 1;
-            followCamera.lockedTarget = tank[1];
+        if (currentTank === tank.length - 1) {
+            currentTank = 0;
+            followCamera.lockedTarget = tank[currentTank];
             movementLimit = 0;
             turnTimer = 0;
         }
-        else if (currentTank === 1) {
-            currentTank = 0;
-            followCamera.lockedTarget = tank[0];
+        else {
+            currentTank++;
+            followCamera.lockedTarget = tank[currentTank];
             movementLimit = 0;
             turnTimer = 0;
         }
@@ -263,17 +264,23 @@ function Game() {
 
         assetsManager.onFinish = function (tasks) {
             engine.runRenderLoop(function () {
-                scene.render();
-                if (!followCamera.lockedTarget)
-                    followCamera.lockedTarget = tank[currentTank];
-                turnTimer++;
-                if (turnTimer === 500)
-                    switchTanks();
-                if (movementLimit < 300)
-                    applyTankMovements(currentTank);
+                if(gameOver == 0) {
+                    scene.render();
+                    if (!followCamera.lockedTarget)
+                        followCamera.lockedTarget = tank[currentTank];
+                    turnTimer++;
+                    if (turnTimer === 500)
+                        switchTanks();
+                    if (movementLimit < 300)
+                        applyTankMovements(currentTank);
 
-                checkRays(tank[currentTank]);
-                fire(currentTank);
+                    checkRays(tank[currentTank]);
+                    //fire(currentTank);
+                }
+                else {
+                    //Player with higher health wins
+                    //Add rematch button
+                }
             });
         };
     }
@@ -497,11 +504,11 @@ function Game() {
         _boxMesh.scaling.y = _lengthY / 59;
         _boxMesh.scaling.z = _lengthZ / 99;
         //_boxMesh.position = newMeshes[0].position;
-        //_boxMesh.position.y += .5; // if I increase this, the dude gets higher in the skyyyyy
+        //_boxMesh.position.y += .5; // if I increase this, the dude gets higher in the sky
         _boxMesh.checkCollisions = true;
         _boxMesh.material = new BABYLON.StandardMaterial("alpha", scene);
         _boxMesh.material.alpha = 0.5;
-        _boxMesh.isVisible = true;
+        _boxMesh.isVisible = false;
         _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
 
         return {
@@ -515,7 +522,7 @@ function Game() {
         };
     }
 
-    function fire(tankID) {
+    /*function fire(tankID) {
         if (isFPressed) {
             console.log("shooting balls");
             createBullet();
@@ -544,7 +551,6 @@ function Game() {
 
     function createBullet() {
         BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "bullet.babylon", scene, onSuccess);
-
         function onSuccess(newMeshes, particles, skeletons) {
             bullet = newMeshes[0];
             bullet.position.x += 10;
@@ -581,6 +587,19 @@ function Game() {
             }
 
         }
+    }*/
+
+    function checkRays(tank) {
+        if (isRPressed) {
+            var origin = tank.position;
+            var direction = tank.frontVector;
+            direction.y = 0;
+            var ray = new BABYLON.Ray(origin, direction, 1000);
+            //var pickRes = scene.pickWithRay(ray);
+
+            var rayHelper = new BABYLON.RayHelper(ray);
+            rayHelper.show(scene, new BABYLON.Color3.Blue);
+        }
     }
 
     function HUD() {
@@ -615,6 +634,7 @@ function Game() {
             timer.innerHTML = sec;
             if(sec < 0) {
                 timer.innerHTML = "GameOver!";
+                gameOver = 1;
                 clearInterval(countTime);
             }
         }, 1000);
