@@ -5,6 +5,7 @@ function UI() {
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
     document.getElementById("timerContainer").style.display = "none";
+    document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
 
     document.getElementById("sandBtn").style.display = "none";
