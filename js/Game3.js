@@ -11,6 +11,7 @@ function Game() {
     var followCamera;
     var assetsManager;
     var shadowGenerator;
+    var textPlaneTexture = [];
 
     var frontHealthBar = [];
     var backHealthBar = [];
@@ -21,6 +22,8 @@ function Game() {
     var healthPercentage = [];
     var healthBarReady = false;
     var alive = [];
+    //var health1;
+    //var health2;
 
     var tank = [];
     var currentTank = 0;
@@ -51,9 +54,6 @@ function Game() {
 
     var isPickable = true;
     var isTankReady = false;
-
-    var health1;
-    var health2;
 
     var gameOver = 0;
 
@@ -134,20 +134,20 @@ function Game() {
 
         //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
-        health1 = 100;
+        /*health1 = 100;
         health2 = 100;
         health1.parent = tank[0];
-        health2.parent = tank[1];
-        cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
-        radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
-        cow = createModel("cow.babylon", null, null, 1, 1, 1, 20);
+        health2.parent = tank[1];*/
+        cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 18);
+        radar = createModel("radar.babylon", null, null, 1, 1, 1, 5);
+        cow = createModel("cow.babylon", null, null, 1, 1, 1, 25);
         helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 3);
         oilStorage = createModel("oilStorage.babylon", null, null, 3, 1, 3, 2);
-        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 10);
-        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 10);
-        rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 5);
-        rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 5);
-        barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 10);
+        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 15);
+        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 15);
+        rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 7);
+        rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 7);
+        barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 16);
 
         waitForIt();
     }
@@ -172,10 +172,10 @@ function Game() {
         createTank("tank2.babylon");
         //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
-        health1 = 100;
+        /*health1 = 100;
         health2 = 100;
         health1.parent = tank[0];
-        health2.parent = tank[1];
+        health2.parent = tank[1];*/
 
         cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
         radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
@@ -377,8 +377,6 @@ function Game() {
             _tank.frontVector = new BABYLON.Vector3(0, 0, -1);
             _tank.rotationSensitivity = .05;
             tank.push(_tank);
-            // tank = clone(tank[0], num);
-
 
             var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene);
             _tank.bounder = boundingBox.boxMesh;
@@ -394,7 +392,24 @@ function Game() {
             }
 
             isTankReady = true;
-            console.log("returning tank of type " + typeof tank[0] + " and isTankReady = " + isTankReady);
+        }
+    }
+
+    function createPlayerName() {
+        for(var i = 0; i<tank.length; i++) {
+            textPlaneTexture.push(new BABYLON.DynamicTexture("dynamic texture", 2048, scene, true));
+            textPlaneTexture[i].drawText("PLAYER " + (i+1), null, 500, "bold 450px Comic Sans MS", "white", "transparent");
+            textPlaneTexture[i].hasAlpha = true;
+
+            tank[i].textPlane = BABYLON.Mesh.CreatePlane("textPlane", 1, scene, false);
+            tank[i].textPlane.billboardMode = BABYLON.AbstractMesh.BILLBOARDMODE_ALL;
+            tank[i].textPlane.material = new BABYLON.StandardMaterial("textPlane", scene);
+            tank[i].textPlane.parent = tank[i].bounder;
+            tank[i].textPlane.position.y += 0.55;
+            tank[i].textPlane.material.diffuseTexture = textPlaneTexture[i];
+            tank[i].textPlane.material.specularColor = new BABYLON.Color3(0,0,0);
+            tank[i].textPlane.material.emissiveColor = new BABYLON.Color3(1,1,1);
+            tank[i].textPlane.material.backFaceCulling = false;
         }
     }
 
@@ -434,6 +449,7 @@ function Game() {
                 alive.push(true);
                 healthPercentage.push(100);
             }
+            createPlayerName();
         }
         else{setTimeout(function () {
             createHealthBar();
@@ -448,8 +464,8 @@ function Game() {
                 if(frontHealthBar[currentTank].scaling.x>0){
                     frontHealthBar[currentTank].scaling.x = healthPercentage[currentTank] / 100;
                     backHealthBar[currentTank].scaling.x = healthPercentage[currentTank] / 100;
-                    frontHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.5;
-                    backHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.5;
+                    frontHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.35;
+                    backHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.35;
                     healthPercentage[currentTank] -= 5;
                 }
 
@@ -684,16 +700,19 @@ function Game() {
     }
 
     function HUD() {
+        /*PLAYER_NAME_AND_HEALTH_BAR*/
+        createHealthBar();
+
         /*ADS*/
         document.getElementById("slider").style.display = "block";
 
-        /*TIMER*/
+        /*GAME_TIMER*/
         document.getElementById("timerContainer").style.display = "block";
         var timer = document.getElementById("timer");
         var sec = 180;
         var countTime = setInterval(function() {
             sec--;
-            timer.innerHTML = sec;
+            timer.innerHTML = "Game ends in " + sec + "s";
             if(sec < 0) {
                 timer.innerHTML = "GameOver!";
                 gameOver = 1;
@@ -701,11 +720,33 @@ function Game() {
             }
         }, 1000);
 
-        createHealthBar();
-
-        /*PLAYER NAME*/
-
+        /*PLAYER_INFO*/
+        document.getElementById("PlayerContainer").style.display = "block";
+        var PlayerTime = document.getElementById("PlayerTime");
+        var PlayerDistance = document.getElementById("PlayerDistance");
+        var sec2 = 20;
+        var distance = 300;
+        var countTime2 = setInterval(function() {
+            sec2--;
+            distance--;
+            //zbat sec2 w distance aw emsahhom w hot turnTimer w movementLimit
+            //hnkhalii el turn 20s wel limit 300 zy manta 3amel
+            PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + sec2 + "s";
+            PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + distance + "cm";
+            if(sec2 <= 0) {
+                sec2=20;
+                distance=300;
+                countTime2;
+                //switchPlayer w update el info tani
+            }
+            if(sec<=0) {
+                PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + 0 + "s";
+                PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + 0 + "cm";
+                clearInterval(countTime2);
+            }
+        }, 1000);
     }
+
 }
 
 
