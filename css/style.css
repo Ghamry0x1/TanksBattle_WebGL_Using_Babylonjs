@@ -38,10 +38,10 @@ body,
 }
 
 #timerContainer {
-    width: 250px;
+    width: 240px;
     z-index: 2;
-    top: 4%;
-    right: 40%;
+    top: 5%;
+    left: 1%;
     position: absolute;
     padding: 2px;
     margin: auto;
@@ -52,8 +52,36 @@ body,
     position: relative;
     color: #eeeeee;
     font-family: "Comic Sans MS";
-    font-size: 40px;
-    text-align: center;
+    font-size: 28px;
+    text-align: left;
+}
+
+#PlayerContainer {
+    width: 290px;
+    z-index: 2;
+    top: 4%;
+    right: 1%;
+    position: absolute;
+    padding: 2px;
+    margin: auto;
+}
+#PlayerTime {
+    width: 100%;
+    z-index: 2;
+    position: relative;
+    color: #eeeeee;
+    font-family: "Comic Sans MS";
+    font-size: 21px;
+    text-align: left;
+}
+#PlayerDistance {
+    width: 100%;
+    z-index: 2;
+    position: relative;
+    color: #eeeeee;
+    font-family: "Comic Sans MS";
+    font-size: 21px;
+    text-align: left;
 }
 
 @keyframes slider {
