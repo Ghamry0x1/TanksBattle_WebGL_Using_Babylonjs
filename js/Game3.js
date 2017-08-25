@@ -1,13 +1,6 @@
 var sceneNum = 0;
 
 function Game() {
-    document.getElementById("UICanvas").style.display = "none";
-    document.getElementById("InstructionsCanvas").style.display = "none";
-    document.getElementById("CreditsCanvas").style.display = "none";
-    document.getElementById("MapsCanvas").style.display = "none";
-
-    document.getElementById("renderCanvas").style.display = "inline";
-
     /*Variables*/
     var canvas;
     var engine;
@@ -15,15 +8,26 @@ function Game() {
     var light;
     var ground;
 
+    var followCamera;
     var assetsManager;
     var shadowGenerator;
-    var movementLimit = 0;
 
-    var currentTank = 0;
-    var followCamera;
-    var turnTimer = 0;
+    var frontHealthBar = [];
+    var backHealthBar = [];
+    var dynamicTexture = [];
+    var healthBarMaterial = [];
+    var healthBarContainerMaterial = [];
+    var healthBarContainer = [];
+    var healthPercentage = [];
+    var healthBarReady = false;
+    var alive = [];
 
     var tank = [];
+    var currentTank = 0;
+    var turnTimer = 0;
+    var movementLimit = 0;
+    var cameraLocked = true;
+
     var bullet;
     var bustedTank;
     var cactus = [];
@@ -53,7 +57,7 @@ function Game() {
 
     var gameOver = 0;
 
-    /*--------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
     //Listeners
     document.addEventListener("keyup", function () {
@@ -78,6 +82,9 @@ function Game() {
         if (event.key == 'r' || event.key == 'R') {
             isRPressed = false;
         }
+        if (event.key == 'q' || event.key == 'Q') {
+            updateHealthBar();
+        }
         //if(event.key == 'g' || event.key =='G')
         //  switchTanks();
     });
@@ -100,6 +107,7 @@ function Game() {
         if (event.key == 'r' || event.key == 'R') {
             isRPressed = true;
         }
+
     });
 
     /*GameStart*/
@@ -121,14 +129,15 @@ function Game() {
         light = createLight();
         var skybox = createSkybox();
 
-        createTank("tank1.babylon", 2);
+        createTank("tank1.babylon");
+        createTank("tank2.babylon");
+
         //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
         health1 = 100;
         health2 = 100;
         health1.parent = tank[0];
         health2.parent = tank[1];
-
         cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
         radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
         cow = createModel("cow.babylon", null, null, 1, 1, 1, 20);
@@ -159,7 +168,8 @@ function Game() {
         light = createLight(1);
         var skybox = createSkybox();
 
-        createTank("tank1.babylon", 2);
+        createTank("tank1.babylon");
+        createTank("tank2.babylon");
         //createTank("tank2.babylon",1);
         //bustedTank = createBustedTank();
         health1 = 100;
@@ -261,13 +271,16 @@ function Game() {
         freeCamera.applyGravity = true;
         freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
         freeCamera.checkCollisions = true;*/
-
+        //createHealthBar();
         assetsManager.onFinish = function (tasks) {
             engine.runRenderLoop(function () {
                 if(gameOver == 0) {
                     scene.render();
-                    if (!followCamera.lockedTarget)
+                    if (!followCamera.lockedTarget&&cameraLocked) {
+                        cameraLocked=false;
                         followCamera.lockedTarget = tank[currentTank];
+
+                    }
                     turnTimer++;
                     if (turnTimer === 500)
                         switchTanks();
@@ -349,43 +362,111 @@ function Game() {
         return camera;
     }
 
-    function createTank(assetName, num) {
+    function createTank(assetName) {
         var tankTask = assetsManager.addMeshTask("tank task", "", "GameObjects/", assetName);
         tankTask.onSuccess = function (task) {
+            var _tank;
             console.log("createTank called");
             var newMeshes = task.loadedMeshes;
-            tank[0] = newMeshes[0];
-            //tank.position.y += 20;
-            tank[0].position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
-            tank[0].checkCollisions = true;
-            tank[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            tank[0].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            tank[0].applyGravity = true;
-            tank[0].frontVector = new BABYLON.Vector3(0, 0, -1);
-            tank[0].rotationSensitivity = .05;
+            _tank = newMeshes[0];
+            _tank.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
+            _tank.checkCollisions = true;
+            _tank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            _tank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            _tank.applyGravity = true;
+            _tank.frontVector = new BABYLON.Vector3(0, 0, -1);
+            _tank.rotationSensitivity = .05;
+            tank.push(_tank);
+            // tank = clone(tank[0], num);
 
-            tank = clone(tank[0], num);
 
-            setTimeout(function () {
-                for (var i = 0; i < tank.length; i++) {
-                    var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene);
-                    tank[i].bounder = boundingBox.boxMesh;
-                    tank[i].bounder.tank = tank[i];
-                    tank[i].bounder.ellipsoidOffset.y += 3; // if I make this += 10 , no collision happens (better performance), but they merge
-                    // if I make it +=2 , they are visually good, but very bad performance (actually bad performance when I console.log in the onCollide)
-                    // if I make it += 1 , very very bad performance as it is constantly in collision with the ground
-                    tank[i].position = tank[i].bounder.position;
-                    tank[i].bounder.onCollide = function (mesh) {
-                        if (mesh.name == "ground") {
-                            console.log("koko");
-                        }
-                    }
+            var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene);
+            _tank.bounder = boundingBox.boxMesh;
+            _tank.bounder.tank = _tank;
+            _tank.bounder.ellipsoidOffset.y += 3; // if I make this += 10 , no collision happens (better performance), but they merge
+            // if I make it +=2 , they are visually good, but very bad performance (actually bad performance when I console.log in the onCollide)
+            // if I make it += 1 , very very bad performance as it is constantly in collision with the ground
+            _tank.position = _tank.bounder.position;
+            _tank.bounder.onCollide = function (mesh) {
+                if (mesh.name == "ground") {
+                    console.log("koko");
                 }
-            }, 300);
+            }
 
             isTankReady = true;
             console.log("returning tank of type " + typeof tank[0] + " and isTankReady = " + isTankReady);
         }
+    }
+
+    function createHealthBar(){
+        console.log("tank length is "+tank.length);
+        if(tank.length>0) {
+            for (var i = 0; i < tank.length; i++) {
+                healthBarMaterial.push(new BABYLON.StandardMaterial("hb1mat", scene));
+                healthBarMaterial[i].diffuseColor = BABYLON.Color3.Green();
+                healthBarMaterial[i].backFaceCulling = false;
+
+                healthBarContainerMaterial.push(new BABYLON.StandardMaterial("hb2mat", scene));
+                healthBarContainerMaterial[i].diffuseColor = BABYLON.Color3.Red();
+                healthBarContainerMaterial[i].backFaceCulling = false;
+
+                dynamicTexture.push(new BABYLON.DynamicTexture("dt1", 512, scene, true));
+                dynamicTexture[i].hasAlpha = true;
+
+
+                frontHealthBar.push(BABYLON.MeshBuilder.CreatePlane("hb1", {width: .7, height: .04, subdivisions: 4}, scene));
+                healthBarContainer.push(BABYLON.MeshBuilder.CreatePlane("hb2", {width: .7,height: .04,subdivisions: 4}, scene));
+                frontHealthBar[i].position = new BABYLON.Vector3(0, 0, -.01);			// Move in front of container slightly.  Without this there is flickering.
+                healthBarContainer[i].position = new BABYLON.Vector3(0, 0.55, 0);     // Position above player.
+                frontHealthBar[i].parent = healthBarContainer[i];
+                healthBarContainer[i].parent = tank[i].bounder;
+                frontHealthBar[i].material = healthBarMaterial[i];
+                healthBarContainer[i].material = healthBarContainerMaterial[i];
+
+                backHealthBar.push(BABYLON.MeshBuilder.CreatePlane("hb1", {width: .7, height: .04, subdivisions: 4}, scene));
+                healthBarContainer.push(BABYLON.MeshBuilder.CreatePlane("hb2", {width: .7,height: .04,subdivisions: 4}, scene));
+                backHealthBar[i].position = new BABYLON.Vector3(0, 0, .01);			// Move in front of container slightly.  Without this there is flickering.
+                backHealthBar[i].parent = healthBarContainer[i];
+                backHealthBar[i].material = healthBarMaterial[i];
+            }
+            healthBarReady=true;
+            for(var i=0;i<tank.length;i++){
+                alive.push(true);
+                healthPercentage.push(100);
+            }
+        }
+        else{setTimeout(function () {
+            createHealthBar();
+        }, 300);}
+    }
+
+    function updateHealthBar(){
+        console.log(healthPercentage[currentTank]);
+        if(healthBarReady) {
+            console.log(alive[currentTank]);
+            if (alive[currentTank]) {
+                if(frontHealthBar[currentTank].scaling.x>0){
+                    frontHealthBar[currentTank].scaling.x = healthPercentage[currentTank] / 100;
+                    backHealthBar[currentTank].scaling.x = healthPercentage[currentTank] / 100;
+                    frontHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.5;
+                    backHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.5;
+                    healthPercentage[currentTank] -= 5;
+                }
+
+                if (frontHealthBar[currentTank].scaling.x <= 0) {
+                    alive[currentTank] = false;
+                }
+                else if (frontHealthBar[currentTank].scaling.x < .5) {
+                    healthBarMaterial[currentTank].diffuseColor = BABYLON.Color3.Yellow();
+                }
+                else if (frontHealthBar[currentTank].scaling.x < .3) {
+                    healthBarMaterial[currentTank].diffuseColor = BABYLON.Color3.Purple();
+                }
+            }
+        }
+        else{setTimeout(function () {
+            updateHealthBar();
+        }, 300);}
     }
 
     function applyTankMovements(tankID) {
@@ -603,25 +684,6 @@ function Game() {
     }
 
     function HUD() {
-        /*NAMES*/
-        document.getElementById("player1").style.display = "inline";
-        document.getElementById("player2").style.display = "inline";
-
-        /*BARS*/
-        var container1 = document.getElementsByClassName("container1");
-        container1[0].style.display = "block";
-        var bar1 = document.getElementsByClassName("bar1");
-        bar1[0].style.display = "block";
-        var bar_fill1 = document.getElementsByClassName("bar-fill1");
-        bar_fill1[0].style.display = "block";
-
-        var container2 = document.getElementsByClassName("container2");
-        container2[0].style.display = "block";
-        var bar2 = document.getElementsByClassName("bar2");
-        bar2[0].style.display = "block";
-        var bar_fill2 = document.getElementsByClassName("bar-fill2");
-        bar_fill2[0].style.display = "block";
-
         /*ADS*/
         document.getElementById("slider").style.display = "block";
 
@@ -638,6 +700,11 @@ function Game() {
                 clearInterval(countTime);
             }
         }, 1000);
+
+        createHealthBar();
+
+        /*PLAYER NAME*/
+
     }
 }
 
