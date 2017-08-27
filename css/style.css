@@ -84,6 +84,28 @@ body,
     text-align: left;
 }
 
+#NTanksContainer {
+    width: 39px;
+    z-index: 2;
+    left: 32%;
+    top: 83%;
+    position: absolute;
+    padding: 2px;
+    background: white;
+    margin: auto;
+    height: 44px;
+}
+#Label {
+    width: 100%;
+    z-index: 2;
+    height: fit-content;
+    position: relative;
+    color: black;
+    font-family: "Comic Sans MS";
+    font-size: 35px;
+    text-align: left;
+}
+
 @keyframes slider {
     0% {
         left: 0;
