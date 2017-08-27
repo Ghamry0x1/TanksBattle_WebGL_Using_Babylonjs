@@ -12,7 +12,7 @@ function Game() {
     var assetsManager;
     var shadowGenerator;
     var textPlaneTexture = [];
-
+    var tanksPositions = [];
     var frontHealthBar = [];
     var backHealthBar = [];
     var dynamicTexture = [];
@@ -22,13 +22,11 @@ function Game() {
     var healthPercentage = [];
     var healthBarReady = false;
     var alive = [];
-    //var health1;
-    //var health2;
 
     var tank = [];
     var currentTank = 0;
-    var turnTimer = 0;
-    var movementLimit = 0;
+    var turnTimer = 15;
+    var movementLimit = 150;
     var cameraLocked = true;
 
     var bullet;
@@ -59,7 +57,7 @@ function Game() {
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-    //Listeners
+    /*Listeners*/
     document.addEventListener("keyup", function () {
         if (event.key == 'a' || event.key == 'A') {
             isAPressed = false;
@@ -129,15 +127,15 @@ function Game() {
         light = createLight();
         var skybox = createSkybox();
 
-        createTank("tank1.babylon");
-        createTank("tank2.babylon");
+        createTank("tank1.babylon",0);
+        createTank("tank2.babylon",1);
+        createTank("tank3.babylon",2);
+        createTank("tank4.babylon",3);
+        createTank("tank5.babylon",4);
+        createTank("tank6.babylon",5);
+        createTank("tank7.babylon",6);
+        createTank("tank8.babylon",7);
 
-        //createTank("tank2.babylon",1);
-        //bustedTank = createBustedTank();
-        /*health1 = 100;
-        health2 = 100;
-        health1.parent = tank[0];
-        health2.parent = tank[1];*/
         cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 18);
         radar = createModel("radar.babylon", null, null, 1, 1, 1, 5);
         cow = createModel("cow.babylon", null, null, 1, 1, 1, 25);
@@ -168,22 +166,22 @@ function Game() {
         light = createLight(1);
         var skybox = createSkybox();
 
-        createTank("tank1.babylon");
-        createTank("tank2.babylon");
-        //createTank("tank2.babylon",1);
-        //bustedTank = createBustedTank();
-        /*health1 = 100;
-        health2 = 100;
-        health1.parent = tank[0];
-        health2.parent = tank[1];*/
+        createTank("tank1.babylon",0);
+        createTank("tank2.babylon",1);
+        createTank("tank3.babylon",2);
+        createTank("tank4.babylon",3);
+        createTank("tank5.babylon",4);
+        createTank("tank6.babylon",5);
+        createTank("tank7.babylon",6);
+        createTank("tank8.babylon",7);
 
         cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 10);
         radar = createModel("radar.babylon", null, null, 1, 1, 1, 2);
         cow = createModel("cow.babylon", null, null, 1, 1, 1, 20);
-        helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 3);
+        helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 1);
         oilStorage = createModel("oilStorage.babylon", null, null, 3, 1, 3, 2);
-        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 10);
-        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 10);
+        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 50);
+        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 100);
         rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 5);
         rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 5);
         barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 10);
@@ -214,6 +212,8 @@ function Game() {
     function loadAssetsManager() {
         if (assetsManager) {
             assetsManager.load();
+            setupTanksPositions()
+
         }
         else {
             setTimeout(function () {
@@ -225,15 +225,26 @@ function Game() {
         if (currentTank === tank.length - 1) {
             currentTank = 0;
             followCamera.lockedTarget = tank[currentTank];
-            movementLimit = 0;
-            turnTimer = 0;
+            movementLimit = 150;
+            turnTimer = 15;
         }
         else {
             currentTank++;
             followCamera.lockedTarget = tank[currentTank];
-            movementLimit = 0;
-            turnTimer = 0;
+            movementLimit = 150;
+            turnTimer = 15;
         }
+    }
+
+    function setupTanksPositions(){
+        tanksPositions.push(new BABYLON.Vector3(125,0,0));
+        tanksPositions.push(new BABYLON.Vector3(-125,0,0));
+        tanksPositions.push(new BABYLON.Vector3(0,0,125));
+        tanksPositions.push(new BABYLON.Vector3(0,0,-125));
+        tanksPositions.push(new BABYLON.Vector3(125,0,125));
+        tanksPositions.push(new BABYLON.Vector3(125,0,-125));
+        tanksPositions.push(new BABYLON.Vector3(-125,0,125));
+        tanksPositions.push(new BABYLON.Vector3(-125,0,-125));
     }
 
     function createShadow() {  //not used yet
@@ -281,10 +292,8 @@ function Game() {
                         followCamera.lockedTarget = tank[currentTank];
 
                     }
-                    turnTimer++;
-                    if (turnTimer === 500)
-                        switchTanks();
-                    if (movementLimit < 300)
+
+                    if (movementLimit > 0)
                         applyTankMovements(currentTank);
 
                     checkRays(tank[currentTank]);
@@ -357,12 +366,12 @@ function Game() {
         camera.radius = 10; // how far from the object to follow
         camera.heightOffset = 2; // how high above the object to place the camera
         camera.rotationOffset = 0; // the viewing angle
-        camera.cameraAcceleration = 0.05 // how fast to move
+        camera.cameraAcceleration = 0.015 // how fast to move
         camera.maxCameraSpeed = 20 // speed limit
         return camera;
     }
 
-    function createTank(assetName) {
+    function createTank(assetName,i) {
         var tankTask = assetsManager.addMeshTask("tank task", "", "GameObjects/", assetName);
         tankTask.onSuccess = function (task) {
             var _tank;
@@ -378,7 +387,7 @@ function Game() {
             _tank.rotationSensitivity = .05;
             tank.push(_tank);
 
-            var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene);
+            var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene,i);
             _tank.bounder = boundingBox.boxMesh;
             _tank.bounder.tank = _tank;
             _tank.bounder.ellipsoidOffset.y += 3; // if I make this += 10 , no collision happens (better performance), but they merge
@@ -390,7 +399,6 @@ function Game() {
                     console.log("koko");
                 }
             }
-
             isTankReady = true;
         }
     }
@@ -398,7 +406,7 @@ function Game() {
     function createPlayerName() {
         for(var i = 0; i<tank.length; i++) {
             textPlaneTexture.push(new BABYLON.DynamicTexture("dynamic texture", 2048, scene, true));
-            textPlaneTexture[i].drawText("PLAYER " + (i+1), null, 500, "bold 450px Comic Sans MS", "white", "transparent");
+            textPlaneTexture[i].drawText("PLAYER " + (i+1), null, 500, "bold 420px Comic Sans MS", "white", "transparent");
             textPlaneTexture[i].hasAlpha = true;
 
             tank[i].textPlane = BABYLON.Mesh.CreatePlane("textPlane", 1, scene, false);
@@ -443,13 +451,11 @@ function Game() {
                 backHealthBar[i].position = new BABYLON.Vector3(0, 0, .01);			// Move in front of container slightly.  Without this there is flickering.
                 backHealthBar[i].parent = healthBarContainer[i];
                 backHealthBar[i].material = healthBarMaterial[i];
-            }
-            healthBarReady=true;
-            for(var i=0;i<tank.length;i++){
                 alive.push(true);
                 healthPercentage.push(100);
             }
             createPlayerName();
+            healthBarReady=true;
         }
         else{setTimeout(function () {
             createHealthBar();
@@ -488,12 +494,12 @@ function Game() {
     function applyTankMovements(tankID) {
         if (isWPressed) {
             tank[tankID].moveWithCollisions(tank[tankID].frontVector);
-            movementLimit++;
+            //movementLimit++;
         }
         if (isSPressed) {
             var reverseVector = tank[tankID].frontVector.multiplyByFloats(-1, 1, -1);
             tank[tankID].moveWithCollisions(reverseVector);
-            movementLimit++;
+            //  movementLimit++;
         }
         if (isDPressed) {
             tank[tankID].rotation.y += .1 * tank[tankID].rotationSensitivity;
@@ -540,7 +546,6 @@ function Game() {
             for (var i = 0; i < model.length; i++) {
                 model[i].position.x += (Math.random() * (200 + 200) - 200);
                 model[i].position.z += (Math.random() * (200 + 200) - 200);
-
             }
             return model;
         }
@@ -554,7 +559,7 @@ function Game() {
         return clones;
     }
 
-    function calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene) {
+    function calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene,tankID) {
         var minx = 10000;
         var miny = 10000;
         var minz = 10000;
@@ -606,8 +611,8 @@ function Game() {
         _boxMesh.material = new BABYLON.StandardMaterial("alpha", scene);
         _boxMesh.material.alpha = 0.5;
         _boxMesh.isVisible = false;
-        _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
-
+        // _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
+        _boxMesh.position = tanksPositions[tankID];
         return {
             min: {x: minx, y: miny, z: minz},
             max: {x: maxx, y: maxy, z: maxz},
@@ -724,35 +729,25 @@ function Game() {
         document.getElementById("PlayerContainer").style.display = "block";
         var PlayerTime = document.getElementById("PlayerTime");
         var PlayerDistance = document.getElementById("PlayerDistance");
-        var sec2 = 20;
-        var distance = 300;
         var countTime2 = setInterval(function() {
-            sec2--;
-            distance--;
+            turnTimer--;
+            if((isWPressed||isSPressed)&&movementLimit>0)
+                movementLimit-=15;
             //zbat sec2 w distance aw emsahhom w hot turnTimer w movementLimit
             //hnkhalii el turn 20s wel limit 300 zy manta 3amel
-            PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + sec2 + "s";
-            PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + distance + "cm";
-            if(sec2 <= 0) {
-                sec2=20;
-                distance=300;
+            PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + turnTimer + "s";
+            PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + movementLimit + "m";
+            if(turnTimer <= 0) {
+                switchTanks();
                 countTime2;
-                //switchPlayer w update el info tani
             }
             if(sec<=0) {
                 PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + 0 + "s";
-                PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + 0 + "cm";
+                PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + 0 + "m";
                 clearInterval(countTime2);
             }
         }, 1000);
+
     }
 
 }
-
-
-
-
-
-
-
-
