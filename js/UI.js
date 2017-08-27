@@ -7,6 +7,7 @@ function UI() {
     document.getElementById("timerContainer").style.display = "none";
     document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
+    document.getElementById("NTanksContainer").style.display = "none";
 
     document.getElementById("sandBtn").style.display = "none";
     document.getElementById("fogBtn").style.display = "none";
