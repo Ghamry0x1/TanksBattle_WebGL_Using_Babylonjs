@@ -10,6 +10,7 @@ function Maps() {
     };
     bgImage.src = "images/PlayPage.png";
 
+    gameOver = 0;
     //NTanks
     n = document.getElementById("Label").value;
     if(n < 2 || n == " ")

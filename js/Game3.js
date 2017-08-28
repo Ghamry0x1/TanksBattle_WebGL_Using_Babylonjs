@@ -1,4 +1,5 @@
 var sceneNum = 0;
+var gameOver = 0;
 
 function Game() {
     /*Variables*/
@@ -52,8 +53,6 @@ function Game() {
 
     var isPickable = true;
     var isTankReady = false;
-
-    var gameOver = 0;
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -300,8 +299,7 @@ function Game() {
                     //fire(currentTank);
                 }
                 else {
-                    //Player with higher health wins
-                    //Add rematch button
+                    GameOver();
                 }
             });
         };
@@ -733,8 +731,6 @@ function Game() {
             turnTimer--;
             if((isWPressed||isSPressed)&&movementLimit>0)
                 movementLimit-=15;
-            //zbat sec2 w distance aw emsahhom w hot turnTimer w movementLimit
-            //hnkhalii el turn 20s wel limit 300 zy manta 3amel
             PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + turnTimer + "s";
             PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + movementLimit + "m";
             if(turnTimer <= 0) {
@@ -747,7 +743,6 @@ function Game() {
                 clearInterval(countTime2);
             }
         }, 1000);
-
     }
 
 }

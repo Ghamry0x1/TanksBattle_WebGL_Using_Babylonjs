@@ -4,6 +4,7 @@ function UI() {
     document.getElementById("InstructionsCanvas").style.display = "none";
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
+    document.getElementById("GameOverCanvas").style.display = "none";
     document.getElementById("timerContainer").style.display = "none";
     document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
@@ -12,6 +13,7 @@ function UI() {
     document.getElementById("sandBtn").style.display = "none";
     document.getElementById("fogBtn").style.display = "none";
     document.getElementById("backBtn").style.display = "none";
+    document.getElementById("rematchBtn").style.display = "none";
 
     document.getElementById("UICanvas").style.display = "inline";
 
