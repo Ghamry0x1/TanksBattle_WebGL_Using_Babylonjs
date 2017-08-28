@@ -1,5 +1,6 @@
 var sceneNum = 0;
 var gameOver = 0;
+var currentTank = 0;
 
 function Game() {
     /*Variables*/
@@ -25,7 +26,6 @@ function Game() {
     var alive = [];
 
     var tank = [];
-    var currentTank = 0;
     var turnTimer = 15;
     var movementLimit = 150;
     var cameraLocked = true;

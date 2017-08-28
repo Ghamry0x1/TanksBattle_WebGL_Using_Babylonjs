@@ -1,4 +1,5 @@
 var n;
+//use n for number of tanks
 
 function Maps() {
     var canvas = document.getElementById("MapsCanvas");

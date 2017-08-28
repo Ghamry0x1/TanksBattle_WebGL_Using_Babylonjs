@@ -17,6 +17,7 @@ function GameOver() {
 
     document.getElementById("GameOverCanvas").style.display = "inline";
     document.getElementById("rematchBtn").style.display = "inline";
+    document.getElementById("WinnerContainer").style.display = "inline";
 
     var canvas = document.getElementById("GameOverCanvas");
     var context = canvas.getContext("2d");
@@ -26,4 +27,7 @@ function GameOver() {
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/GameOverPage.png";
+
+    //num of last alive tank
+    document.getElementById("Winner").innerHTML = "PLAYER " + (currentTank+1) + " WINS!";
 }

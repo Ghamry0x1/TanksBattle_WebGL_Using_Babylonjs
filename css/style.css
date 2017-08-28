@@ -110,6 +110,25 @@ body,
     text-align: center;
 }
 
+#WinnerContainer {
+    width: 350px;
+    z-index: 2;
+    top: 40%;
+    right: 35%;
+    position: absolute;
+    margin: auto;
+}
+#Winner {
+    width: 100%;
+    z-index: 2;
+    position: relative;
+    color: #ffffff;
+    font-family: "Comic Sans MS";
+    font-size: 59px;
+    font-weight: bolder;
+    text-align: center;
+}
+
 @keyframes slider {
     0% {
         left: 0;
