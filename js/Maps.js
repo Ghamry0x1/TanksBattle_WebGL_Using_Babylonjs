@@ -14,4 +14,6 @@ function Maps() {
     n = document.getElementById("Label").value;
     if(n < 2 || n == " ")
         n=2;
+    if(n>8)
+        n=8;
 }
