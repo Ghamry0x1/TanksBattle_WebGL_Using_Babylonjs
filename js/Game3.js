@@ -31,7 +31,7 @@ function Game() {
     var cameraLocked = true;
 
     var bullet;
-    var bustedTank;
+    var bustedTank = [];
     var cactus = [];
     var radar = [];
     var cow = [];
@@ -244,6 +244,19 @@ function Game() {
         tanksPositions.push(new BABYLON.Vector3(125,0,-125));
         tanksPositions.push(new BABYLON.Vector3(-125,0,125));
         tanksPositions.push(new BABYLON.Vector3(-125,0,-125));
+    }
+
+    function createBustedTank(currentTank) {
+        BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "bustedTank.babylon", scene, onSuccess);
+        function onSuccess(newMeshes, particles, skeletons) {
+            bustedTank = newMeshes[0];
+            bustedTank.position = tank[currentTank].position;
+            bustedTank.checkCollisions = true;
+            bustedTank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            bustedTank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            bustedTank.applyGravity = true;
+            return bustedTank;
+        }
     }
 
     function createShadow() {  //not used yet
@@ -472,7 +485,6 @@ function Game() {
                     backHealthBar[currentTank].position.x =  (1- (healthPercentage[currentTank] / 100)) * -0.35;
                     healthPercentage[currentTank] -= 5;
                 }
-
                 if (frontHealthBar[currentTank].scaling.x <= 0) {
                     alive[currentTank] = false;
                 }
@@ -483,6 +495,13 @@ function Game() {
                     healthBarMaterial[currentTank].diffuseColor = BABYLON.Color3.Purple();
                 }
             }
+            else if (!(alive[currentTank])){
+                bustedTank = createBustedTank(currentTank);
+                tank[currentTank].dispose();
+                healthBarContainer[currentTank].dispose();
+                healthBarMaterial[currentTank].dispose();
+                switchTanks();
+            }
         }
         else{setTimeout(function () {
             updateHealthBar();
@@ -490,26 +509,28 @@ function Game() {
     }
 
     function applyTankMovements(tankID) {
-        if (isWPressed) {
-            tank[tankID].moveWithCollisions(tank[tankID].frontVector);
-            //movementLimit++;
+        if (alive[tankID]) {
+            if (isWPressed) {
+                tank[tankID].moveWithCollisions(tank[tankID].frontVector);
+                //movementLimit++;
+            }
+            if (isSPressed) {
+                var reverseVector = tank[tankID].frontVector.multiplyByFloats(-1, 1, -1);
+                tank[tankID].moveWithCollisions(reverseVector);
+                //  movementLimit++;
+            }
+            if (isDPressed) {
+                tank[tankID].rotation.y += .1 * tank[tankID].rotationSensitivity;
+                tank[tankID].bounder.rotation.y += .1 * tank[tankID].rotationSensitivity;
+            }
+            if (isAPressed) {
+                tank[tankID].rotation.y -= .1 * tank[tankID].rotationSensitivity;
+                tank[tankID].bounder.rotation.y -= .1 * tank[tankID].rotationSensitivity;
+            }
+            tank[tankID].frontVector.x = Math.sin(tank[tankID].rotation.y) * -0.1;
+            tank[tankID].frontVector.z = Math.cos(tank[tankID].rotation.y) * -0.1;
+            tank[tankID].frontVector.y = -4; // adding a bit of gravity
         }
-        if (isSPressed) {
-            var reverseVector = tank[tankID].frontVector.multiplyByFloats(-1, 1, -1);
-            tank[tankID].moveWithCollisions(reverseVector);
-            //  movementLimit++;
-        }
-        if (isDPressed) {
-            tank[tankID].rotation.y += .1 * tank[tankID].rotationSensitivity;
-            tank[tankID].bounder.rotation.y += .1 * tank[tankID].rotationSensitivity;
-        }
-        if (isAPressed) {
-            tank[tankID].rotation.y -= .1 * tank[tankID].rotationSensitivity;
-            tank[tankID].bounder.rotation.y -= .1 * tank[tankID].rotationSensitivity;
-        }
-        tank[tankID].frontVector.x = Math.sin(tank[tankID].rotation.y) * -0.1;
-        tank[tankID].frontVector.z = Math.cos(tank[tankID].rotation.y) * -0.1;
-        tank[tankID].frontVector.y = -4; // adding a bit of gravity
     }
 
     function createModel(modelName, materialName, modelColor, x, y, z, num) {
