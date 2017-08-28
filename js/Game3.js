@@ -13,6 +13,12 @@ function Game() {
     var followCamera;
     var assetsManager;
     var shadowGenerator;
+    var cameraLocked = true;
+
+    var tankNames = [];
+    var tank = [];
+    var turnTimer = 15;
+    var movementLimit = 150;
 
     var dontMove = false;
     var delayRayShot=false;
@@ -27,11 +33,6 @@ function Game() {
     var healthPercentage = [];
     var healthBarReady = false;
     var alive = [];
-    var tankNames = [];
-    var tank = [];
-    var turnTimer = 15;
-    var movementLimit = 150;
-    var cameraLocked = true;
 
     var bullet;
     var bustedTank = [];
@@ -763,6 +764,12 @@ function Game() {
         tank[tankID].bounder.dispose();
         tank[tankID].dispose();
         //tank.splice(tankID,1);
+
+        /*tank[tankID].bounder.isPickable=false;
+        tank[tankID].bounder.dispose();
+        tank[tankID].dispose();
+
+        bustedTank = createBustedTank(tankID);*/
     }
 
     function HUD() {
