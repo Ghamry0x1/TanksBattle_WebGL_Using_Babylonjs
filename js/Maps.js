@@ -1,5 +1,4 @@
 var n;
-//use n for number of tanks
 
 function Maps() {
     var canvas = document.getElementById("MapsCanvas");
@@ -12,10 +11,4 @@ function Maps() {
     bgImage.src = "images/PlayPage.png";
 
     gameOver = 0;
-    //NTanks
-    n = document.getElementById("Label").value;
-    if(n < 2 || n == " ")
-        n=2;
-    if(n>8)
-        n=8;
 }

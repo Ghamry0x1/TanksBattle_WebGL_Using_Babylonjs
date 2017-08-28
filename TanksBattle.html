@@ -41,6 +41,8 @@
 
                 Maps();
                 console.log("gotoMaps called");
+
+                console.log(document.getElementById("Label").value);
             }
             function gotoUI() {
                 document.getElementById("renderCanvas").style.display = "none";
@@ -135,6 +137,11 @@
                 document.getElementById("slider").style.display = "block";
 
                 sceneNum = 0;
+                n = parseInt(document.getElementById("Label").value);
+                if(n < 2 || n == " ")
+                    n=2;
+                if(n>8)
+                    n=8;
                 Game();
                 console.log("gotoSand called");
             }
@@ -163,6 +170,11 @@
                 document.getElementById("slider").style.display = "block";
 
                 sceneNum = 1;
+                n = parseInt(document.getElementById("Label").value);
+                if(n < 2 || n == " ")
+                    n=2;
+                if(n>8)
+                    n=8;
                 Game();
                 console.log("gotoFog called");
             }
@@ -183,12 +195,11 @@
             <div id="PlayerDistance"></div>
         </div>
         <div id="NTanksContainer">
-            <input id="Label" contenteditable="true" maxlength="1" size="1"></input>
+            <input id="Label" maxlength="1" size="1" value="2"></input>
         </div>
         <div id="WinnerContainer">
             <div id="Winner"></div>
         </div>
-
 
         <!-- BUTTONS -->
         <img alt="playBtn" src="images/play.png"
