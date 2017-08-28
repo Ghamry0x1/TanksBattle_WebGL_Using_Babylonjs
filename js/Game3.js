@@ -111,11 +111,10 @@ function Game() {
 
     });
 
+    /*GameStart*/
     for(var i=0;i<n;i++){
         tankNames.push("tank"+(i+1)+".babylon");
     }
-
-    /*GameStart*/
     createScene();
     HUD();
 
