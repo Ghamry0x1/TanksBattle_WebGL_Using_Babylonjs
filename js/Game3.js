@@ -225,8 +225,9 @@ function Game() {
                 movementLimit = 150;
                 turnTimer = 15;
                 dontMove = false;
+                for(var i=0;i<tank.length;i++)
+                    tank[i].bounder.isPickable = true;
                 tank[currentTank].bounder.isPickable = false;
-                tank[tank.length - 1].bounder.isPickable = true;
             }
             else switchTanks();
         }
@@ -237,8 +238,9 @@ function Game() {
                 movementLimit = 150;
                 turnTimer = 15;
                 dontMove = false;
+                for(var i=0;i<tank.length;i++)
+                    tank[i].bounder.isPickable = true;
                 tank[currentTank].bounder.isPickable = false;
-                tank[currentTank - 1].bounder.isPickable = true;
             }
             else switchTanks();
         }
@@ -255,16 +257,15 @@ function Game() {
         tanksPositions.push(new BABYLON.Vector3(-125,0,-125));
     }
 
-    function createBustedTank(currentTank) {
+    function createBustedTank(tankID) {
         BABYLON.SceneLoader.ImportMesh("", "GameObjects/", "bustedTank.babylon", scene, onSuccess);
         function onSuccess(newMeshes, particles, skeletons) {
-            bustedTank = newMeshes[0];
-            bustedTank.position = tank[currentTank].position;
-            bustedTank.checkCollisions = true;
-            bustedTank.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-            bustedTank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
-            bustedTank.applyGravity = true;
-            return bustedTank;
+            bustedTank[tankID]=newMeshes[0];
+            bustedTank[tankID].position = tank[tankID].position;
+            bustedTank[tankID].checkCollisions = true;
+            bustedTank[tankID].ellipsoid = new BABYLON.Vector3(1, 1, 1);
+            bustedTank[tankID].ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
+            bustedTank[tankID].applyGravity = true;
         }
     }
 
@@ -405,6 +406,9 @@ function Game() {
             _tank.applyGravity = true;
             _tank.frontVector = new BABYLON.Vector3(0, 0, -1);
             _tank.rotationSensitivity = .05;
+            for(var j=0;j<_tank._children.length;j++){
+                _tank._children[j].name+="_"+i;
+            }
             tank.push(_tank);
 
             var boundingBox = calculateAndMakeBoundingBoxOfCompositeMeshes(newMeshes, scene,i);
@@ -500,17 +504,17 @@ function Game() {
                 else if (frontHealthBar[tankID].scaling.x < .5) {
                     healthBarMaterial[tankID].diffuseColor = BABYLON.Color3.Yellow();
                 }
-                else if (frontHealthBar[tankID].scaling.x < .3) {
-                    healthBarMaterial[tankID].diffuseColor = BABYLON.Color3.Purple();
-                }
             }
-            /*else if (!(alive[tankID])){
-                bustedTank = createBustedTank(tankID);
+            else if (!(alive[tankID])){
+                createBustedTank(tankID);
+                createFire(tankID);
+                tank[tankID].bounder.dispose();
                 tank[tankID].dispose();
                 healthBarContainer[tankID].dispose();
                 healthBarMaterial[tankID].dispose();
-                switchTanks();
-            }*/
+                textPlaneTexture[tankID].dispose();
+
+            }
         }
         else{setTimeout(function () {
             updateHealthBar();
@@ -639,7 +643,10 @@ function Game() {
         _boxMesh.isVisible = true;
         // _boxMesh.position = new BABYLON.Vector3(Math.floor((Math.random() * 100) + 1), 0, Math.floor((Math.random() * 100) + 1));
         _boxMesh.position = tanksPositions[tankID];
-        _boxMesh.isPickable=false;
+        if(tankID===0)
+            _boxMesh.isPickable=false;
+        else
+            _boxMesh.isPickable=true;
         return {
             min: {x: minx, y: miny, z: minz},
             max: {x: maxx, y: maxy, z: maxz},
@@ -736,11 +743,11 @@ function Game() {
             var hit = scene.pickWithRay(ray);
             if(hit.pickedMesh) {
                 console.log("mesh name is " + hit.pickedMesh.name);
-                if (hit.pickedMesh.name.startsWith("tankBounder_")) {
+                if (hit.pickedMesh.name.startsWith("tankBounder_")||hit.pickedMesh.name.startsWith("TankTracksRight_")||hit.pickedMesh.name.startsWith("TankTracksLeft_")) {
                     var tankID = parseInt(hit.pickedMesh.name[hit.pickedMesh.name.length - 1]);
-                    if(alive[tankID])
+                    //if(alive[tankID])
                         updateHealthBar(tankID);
-                    else destroyTank(tankID);
+                    //else destroyTank(tankID);
                 }
             }
         }
@@ -757,19 +764,107 @@ function Game() {
             rayHelper.show(scene, new BABYLON.Color3.Blue);
         }
     }*/
-    function destroyTank(tankID){
-        tank[tankID].bounder.isPickable=false;
-        textPlaneTexture[tankID].dispose();
-        healthBarContainer[tankID].dispose();
-        tank[tankID].bounder.dispose();
-        tank[tankID].dispose();
-        //tank.splice(tankID,1);
+    function createFire(tankID){
+        if(bustedTank[tankID]) {
+            //Smoke
+            var smokeSystem = new BABYLON.ParticleSystem("particles", 1000, scene);
+            smokeSystem.particleTexture = new BABYLON.Texture("images/flare.png", scene);
+            smokeSystem.emitter = ground; // the starting object, the emitter
+            smokeSystem.minEmitBox = new BABYLON.Vector3(bustedTank[tankID].position.x-1, bustedTank[tankID].position.y-2, bustedTank[tankID].position.z); // Starting all from
+            smokeSystem.maxEmitBox = new BABYLON.Vector3(bustedTank[tankID].position.x+1, bustedTank[tankID].position.y-2, bustedTank[tankID].position.z+1); // To...
+            //smokeSystem.minEmitBox =  bustedTank[tankID].position;
+            //smokeSystem.maxEmitBox = bustedTank[tankID].position;
+            smokeSystem.position=bustedTank[tankID].position;
+            smokeSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.1, 1.0);
+            smokeSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
 
-        /*tank[tankID].bounder.isPickable=false;
-        tank[tankID].bounder.dispose();
-        tank[tankID].dispose();
+            smokeSystem.minSize = 0.03;
+            smokeSystem.maxSize = 2;
 
-        bustedTank = createBustedTank(tankID);*/
+            smokeSystem.minLifeTime = 0.3;
+            smokeSystem.maxLifeTime = 1.5;
+
+            smokeSystem.emitRate = 2000;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            smokeSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            smokeSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            smokeSystem.direction1 = new BABYLON.Vector3(-1.5, 8, -1.5);
+            smokeSystem.direction2 = new BABYLON.Vector3(1.5, 8, 1.5);
+
+            smokeSystem.minAngularSpeed = 0;
+            smokeSystem.maxAngularSpeed = Math.PI;
+
+            smokeSystem.minEmitPower = 0.5;
+            smokeSystem.maxEmitPower = 1.5;
+            smokeSystem.updateSpeed = 0.01;
+
+            smokeSystem.start();
+
+
+
+            // Create a particle system
+            var fireSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+
+            //Texture of each particle
+            fireSystem.particleTexture = new BABYLON.Texture("images/flare.png", scene);
+
+            // Where the particles come from
+            fireSystem.emitter = ground; // the starting object, the emitter
+            fireSystem.minEmitBox = new BABYLON.Vector3(bustedTank[tankID].position.x-1, bustedTank[tankID].position.y-2, bustedTank[tankID].position.z); // Starting all from
+            fireSystem.maxEmitBox = new BABYLON.Vector3(bustedTank[tankID].position.x+1, bustedTank[tankID].position.y-2, bustedTank[tankID].position.z+1); // To...
+            //fireSystem.minEmitBox =  bustedTank[tankID].position;
+            //fireSystem.maxEmitBox = bustedTank[tankID].position;
+            // Colors of all particles
+            fireSystem.color1 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.color2 = new BABYLON.Color4(1, 0.5, 0, 1.0);
+            fireSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+
+            // Size of each particle (random between...
+            fireSystem.minSize = 0.3;
+            fireSystem.maxSize = 2;
+
+            // Life time of each particle (random between...
+            fireSystem.minLifeTime = 0.2;
+            fireSystem.maxLifeTime = 0.4;
+
+            // Emission rate
+            fireSystem.emitRate = 5000;
+
+            // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+            fireSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+            // Set the gravity of all particles
+            fireSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+            // Direction of each particle after it has been emitted
+            fireSystem.direction1 = new BABYLON.Vector3(0, 4, 0);
+            fireSystem.direction2 = new BABYLON.Vector3(0, 4, 0);
+
+            // Angular speed, in radians
+            fireSystem.minAngularSpeed = 0;
+            fireSystem.maxAngularSpeed = Math.PI;
+
+            // Speed
+            fireSystem.minEmitPower = 1;
+            fireSystem.maxEmitPower = 3;
+            fireSystem.updateSpeed = 0.01;
+
+            // Start the particle system
+            fireSystem.start();
+            setTimeout(function () {
+                fireSystem.stop();
+                smokeSystem.stop();
+            }, 5000);
+        }
+        else{
+            setTimeout(function () {
+                createFire(tankID);
+            }, 500);
+        }
     }
 
     function HUD() {
