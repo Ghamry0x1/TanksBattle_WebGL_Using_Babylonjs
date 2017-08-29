@@ -28,6 +28,6 @@ function GameOver() {
     };
     bgImage.src = "images/GameOverPage.png";
 
-    //num of last alive tank
+    //num of last alive tank (x)
     document.getElementById("Winner").innerHTML = "PLAYER " + (currentTank+1) + " WINS!";
 }
