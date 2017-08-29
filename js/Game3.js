@@ -1,6 +1,7 @@
 var sceneNum = 0;
 var gameOver = 0;
 var currentTank = 0;
+var alive = [];
 
 function Game() {
     /*Variables*/
@@ -32,7 +33,6 @@ function Game() {
     var healthBarContainer = [];
     var healthPercentage = [];
     var healthBarReady = false;
-    var alive = [];
 
     var bullet;
     var bustedTank = [];
@@ -220,6 +220,7 @@ function Game() {
     function waitForIt() {
         console.log("wait for it");
         loadAssetsManager();
+        //try loading page here
 
         followCamera = createFollowCamera(currentTank);
         scene.activeCamera = followCamera;
@@ -238,7 +239,7 @@ function Game() {
         freeCamera.applyGravity = true;
         freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
         freeCamera.checkCollisions = true;*/
-        //createHealthBar();
+
         assetsManager.onFinish = function (tasks) {
             engine.runRenderLoop(function () {
                 if(gameOver == 0) {
@@ -246,7 +247,6 @@ function Game() {
                     if (!followCamera.lockedTarget&&cameraLocked) {
                         cameraLocked=false;
                         followCamera.lockedTarget = tank[currentTank];
-
                     }
 
                     if (movementLimit <= 0)
@@ -256,6 +256,7 @@ function Game() {
                     //fire(currentTank);
                 }
                 else {
+                    //reset();
                     GameOver();
                 }
             });
@@ -909,5 +910,17 @@ function Game() {
                 clearInterval(countTime2);
             }
         }, 1000);
+    }
+
+    function reset() {
+        gameOver = 0;
+        /*for(var x=0; x<n; x++) {
+            tank.pop();
+        }
+        console.log(tank.length);*/
+
+        //3ayez arga3 kol haga zy fel awel khales
+        // el arrays tefda kolaha ytshal el feha (tanks, tankNames, tanksPositions, alive, ...)
+        //w ay variable mohem hyfre2 ka flag w etghyar yerga3 zy ma kan, zy gameOver wkeda
     }
 }
