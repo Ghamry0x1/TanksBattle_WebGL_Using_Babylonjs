@@ -1,5 +1,3 @@
-var n;
-
 function GameOver() {
     document.getElementById("renderCanvas").style.display = "none";
     document.getElementById("InstructionsCanvas").style.display = "none";
@@ -29,5 +27,11 @@ function GameOver() {
     bgImage.src = "images/GameOverPage.png";
 
     //num of last alive tank (x)
+    /*var x;
+    for(var l=0; l<n; l++) {
+        //player with highest health = x
+        if(alive[l])
+            x=(l+1);
+    }*/
     document.getElementById("Winner").innerHTML = "PLAYER " + (currentTank+1) + " WINS!";
 }
