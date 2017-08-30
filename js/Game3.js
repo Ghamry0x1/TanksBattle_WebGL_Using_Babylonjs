@@ -58,7 +58,9 @@ function Game() {
     var isPickable = true;
     var isTankReady = false;
 
-    /*--------------------------------------------------------------------------------------------------------------------*/
+    var gunshotSound;
+
+/*--------------------------------------------------------------------------------------------------------------------*/
 
     /*Listeners*/
     document.addEventListener("keyup", function () {
@@ -116,9 +118,6 @@ function Game() {
     }
     createScene();
     HUD();
-    /*var backSound = new BABYLON.Sound("backSound", "AudioClips/BackgroundMusic.wav", scene, null, {loop: true});
-    backSound.play();
-    console.log("sounds");*/
 
     /*Functions*/
     function createSandScene() {
@@ -130,6 +129,11 @@ function Game() {
         engine.enableOfflineSupport = false;
         scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
         createAssetsManager();
+
+        var binaryTask = assetsManager.addBinaryFileTask("gunshot task", "AudioClips/BackgroundMusic.wav");
+        binaryTask.onSuccess = function (task) {
+            gunshotSound = new BABYLON.Sound("gunshot", task.data, scene, null, { loop: true});
+        }
 
         ground = createGround();
         light = createLight();
@@ -285,16 +289,13 @@ function Game() {
         followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
         followCamera.checkCollisions = true;
 
-        /*var freeCamera = createFreeCamera();
-        scene.activeCamera = freeCamera;
-        scene.collisionsEnabled = true;
+        /*var backSound = new BABYLON.Sound("backSound", "AudioClips/BackgroundMusic.wav", scene, function() {
+            backSound.play();
+            console.log("sounds");
+        }, {loop: true, autoplay: true});*/
 
-        freeCamera.attachControl(canvas);
-        freeCamera.applyGravity = true;
-        freeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-        freeCamera.checkCollisions = true;*/
-        //createHealthBar();
         assetsManager.onFinish = function (tasks) {
+            gunshotSound.play();
             engine.runRenderLoop(function () {
                 if(gameOver == 0) {
                     scene.render();
@@ -316,23 +317,10 @@ function Game() {
                 }
                 else {
                     GameOver();
+                    //reset();
                 }
             });
         };
-    }
-
-    function createFreeCamera(scene) {
-        var camera = new BABYLON.FreeCamera("c1", new BABYLON.Vector3(0, 10, 0), scene);
-        camera.keysUp.push('w'.charCodeAt(0));
-        camera.keysUp.push('W'.charCodeAt(0));
-        camera.keysDown.push('s'.charCodeAt(0));
-        camera.keysDown.push('S'.charCodeAt(0));
-        camera.keysRight.push('d'.charCodeAt(0));
-        camera.keysRight.push('D'.charCodeAt(0));
-        camera.keysLeft.push('a'.charCodeAt(0));
-        camera.keysLeft.push('A'.charCodeAt(0));
-        camera.checkCollisions = true;
-        return camera;
     }
 
     function createLight(flag) {
@@ -888,7 +876,7 @@ function Game() {
         /*GAME_TIMER*/
         document.getElementById("timerContainer").style.display = "block";
         var timer = document.getElementById("timer");
-        var sec = 180;
+        var sec = 360;
         var countTime = setInterval(function() {
             sec--;
             timer.innerHTML = "Game ends in " + sec + "s";
@@ -919,6 +907,10 @@ function Game() {
                 clearInterval(countTime2);
             }
         }, 1000);
+    }
+
+    function reset() {
+        scene.dispose();
     }
 
 }
