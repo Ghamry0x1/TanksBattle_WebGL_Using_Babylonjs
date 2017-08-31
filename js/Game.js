@@ -660,9 +660,8 @@ function Game() {
 
     function createExplosion(x,y,z){
         if(bullet) {
-
             var fireSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
-            fireSystem.particleTexture = new BABYLON.Texture("images/flare2.png", scene);
+            fireSystem.particleTexture = new BABYLON.Texture("images/flare.png", scene);
             fireSystem.emitter = ground;
             fireSystem.minEmitBox = new BABYLON.Vector3(x-1,y+2, z); // Starting all from
             fireSystem.maxEmitBox = new BABYLON.Vector3(x+1,y+2, z+1); // To...
