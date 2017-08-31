@@ -1,5 +1,3 @@
-var n;
-
 function Maps() {
     var canvas = document.getElementById("MapsCanvas");
     var context = canvas.getContext("2d");
@@ -9,6 +7,5 @@ function Maps() {
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/PlayPage.png";
-
     gameOver = 0;
 }
