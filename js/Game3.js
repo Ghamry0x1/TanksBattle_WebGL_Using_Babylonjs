@@ -146,7 +146,6 @@ function Game() {
         engine.enableOfflineSupport = false;
         scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
         createAssetsManager();
-
         loadSounds();
 
         ground = createGround();
@@ -181,6 +180,7 @@ function Game() {
         scene.fogDensity = 0.01;
         scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
         createAssetsManager();
+        loadSounds();
 
         ground = createGround();
         light = createLight(1);
