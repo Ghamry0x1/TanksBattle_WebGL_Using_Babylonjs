@@ -58,7 +58,11 @@ function Game() {
     var isPickable = true;
     var isTankReady = false;
 
-    var gunshotSound;
+    var backSound;
+    var TankExplosion;
+    var bulletSound;
+    var EngineIdle;
+    var EngineDriving;
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -68,12 +72,20 @@ function Game() {
             isAPressed = false;
         }
         if (event.key == 's' || event.key == 'S') {
+            if(!EngineIdle.isPlaying) {
+                EngineIdle.play();
+                EngineDriving.stop();
+            }
             isSPressed = false;
         }
         if (event.key == 'd' || event.key == 'D') {
             isDPressed = false;
         }
         if (event.key == 'w' || event.key == 'W') {
+            if(!EngineIdle.isPlaying) {
+                EngineIdle.play();
+                EngineDriving.stop();
+            }
             isWPressed = false;
         }
         if (event.key == 'f' || event.key == 'F') {
@@ -85,20 +97,26 @@ function Game() {
         if (event.key == 'q' || event.key == 'Q') {
             updateHealthBar();
         }
-        //if(event.key == 'g' || event.key =='G')
-        //  switchTanks();
     });
     document.addEventListener("keydown", function () {
         if (event.key == 'a' || event.key == 'A') {
             isAPressed = true;
         }
         if (event.key == 's' || event.key == 'S') {
+            if(!EngineDriving.isPlaying) {
+                EngineDriving.play();
+                EngineIdle.stop();
+            }
             isSPressed = true;
         }
         if (event.key == 'd' || event.key == 'D') {
             isDPressed = true;
         }
         if (event.key == 'w' || event.key == 'W') {
+            if(!EngineDriving.isPlaying) {
+                EngineDriving.play();
+                EngineIdle.stop();
+            }
             isWPressed = true;
         }
         if (event.key == 'f' || event.key == 'F') {
@@ -109,7 +127,6 @@ function Game() {
             checkRays();
             isRPressed = true;
         }
-
     });
 
     /*GameStart*/
@@ -130,10 +147,7 @@ function Game() {
         scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
         createAssetsManager();
 
-        var binaryTask = assetsManager.addBinaryFileTask("gunshot task", "AudioClips/BackgroundMusic.wav");
-        binaryTask.onSuccess = function (task) {
-            gunshotSound = new BABYLON.Sound("gunshot", task.data, scene, null, { loop: true});
-        }
+        loadSounds();
 
         ground = createGround();
         light = createLight();
@@ -289,13 +303,7 @@ function Game() {
         followCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
         followCamera.checkCollisions = true;
 
-        /*var backSound = new BABYLON.Sound("backSound", "AudioClips/BackgroundMusic.wav", scene, function() {
-            backSound.play();
-            console.log("sounds");
-        }, {loop: true, autoplay: true});*/
-
         assetsManager.onFinish = function (tasks) {
-            gunshotSound.play();
             engine.runRenderLoop(function () {
                 if(gameOver == 0) {
                     scene.render();
@@ -499,11 +507,13 @@ function Game() {
         tank[tankID].bounder.isPickable=false;
         createBustedTank(tankID);
         createFire(tankID);
-        //tank[tankID].bounder.dispose();
         tank[tankID].dispose();
         healthBarContainer[tankID].dispose();
         healthBarMaterial[tankID].dispose();
-        //textPlaneTexture[tankID].dispose();
+
+        EngineDriving.stop();
+        EngineIdle.stop();
+        TankExplosion.play();
     }
 
     function applyTankMovements() {
@@ -734,6 +744,7 @@ function Game() {
     function fire(){
         if(!hasShot) {
             createBullet();
+            bulletSound.play();
             hasShot=true;
             tank.forEach(function (tank1) {
                 bullet.actionManager.registerAction(new BABYLON.ExecuteCodeAction({
@@ -909,8 +920,35 @@ function Game() {
         }, 1000);
     }
 
+    function loadSounds() {
+        var binaryTask = assetsManager.addBinaryFileTask("backSound task", "AudioClips/backSound.mp3");
+        binaryTask.onSuccess = function (task) {
+            backSound = new BABYLON.Sound("backSound", task.data, scene, null, { loop: true, autoplay: true, volume: .6});
+        }
+
+        binaryTask = assetsManager.addBinaryFileTask("TankExplosion task", "AudioClips/TankExplosion.mp3");
+        binaryTask.onSuccess = function (task) {
+            TankExplosion = new BABYLON.Sound("TankExplosion", task.data, scene, null, { loop: false, autoplay: false});
+        }
+
+        binaryTask = assetsManager.addBinaryFileTask("bulletSound task", "AudioClips/bullet.wav");
+        binaryTask.onSuccess = function (task) {
+            bulletSound = new BABYLON.Sound("bulletSound", task.data, scene, null, { loop: false, autoplay: false});
+        }
+
+        binaryTask = assetsManager.addBinaryFileTask("EngineDriving task", "AudioClips/EngineDriving.mp3");
+        binaryTask.onSuccess = function (task) {
+            EngineDriving = new BABYLON.Sound("EngineDriving", task.data, scene, null, { loop: true, autoplay: false, volume: .7});
+        }
+
+        binaryTask = assetsManager.addBinaryFileTask("EngineIdle task", "AudioClips/EngineIdle.mp3");
+        binaryTask.onSuccess = function (task) {
+            EngineIdle = new BABYLON.Sound("EngineIdle", task.data, scene, null, { loop: true, autoplay: true, volume: .6});
+        }
+    }
+
     function reset() {
-        scene.dispose();
+        //scene.dispose();
     }
 
 }
