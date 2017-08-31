@@ -135,6 +135,9 @@
                 document.getElementById("PlayerContainer").style.display = "block";
                 document.getElementById("slider").style.display = "block";
 
+                var musicPlayer = document.getElementById("musicPlayer");
+                musicPlayer.pause();
+
                 sceneNum = 0;
                 n = parseInt(document.getElementById("Label").value);
                 if(n < 2 || n == " ")
@@ -167,6 +170,9 @@
                 document.getElementById("timerContainer").style.display = "block";
                 document.getElementById("PlayerContainer").style.display = "block";
                 document.getElementById("slider").style.display = "block";
+
+                var musicPlayer = document.getElementById("musicPlayer");
+                musicPlayer.pause();
 
                 sceneNum = 1;
                 n = parseInt(document.getElementById("Label").value);
@@ -226,6 +232,11 @@
                 <img src="images/Amsterdam.jpg">
             </figure>
         </div>
+
+        <!-- MUSIC -->
+        <audio id="musicPlayer" autoplay="" controls="" loop="" preload="">
+            <source src="/AudioClips/introMusic.mp3" type="audio/mpeg"></source>
+        </audio>
 
     </body>
 </html>
