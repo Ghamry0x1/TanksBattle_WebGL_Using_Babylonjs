@@ -1,6 +1,7 @@
 var sceneNum = 0;
 var gameOver = 0;
 var currentTank = 0;
+var n;
 
 function Game() {
     /*Variables*/
@@ -321,11 +322,10 @@ function Game() {
                         dontMove=true;
 
                     applyTankMovements();
-                    //fire(currentTank);
                 }
                 else {
                     GameOver();
-                    //reset();
+                    reset();
                 }
             });
         };
@@ -949,6 +949,38 @@ function Game() {
 
     function reset() {
         //scene.dispose();
+        tankNames = [];
+        tank = [];
+        textPlaneTexture = [];
+        tanksPositions = [];
+        frontHealthBar = [];
+        backHealthBar = [];
+        dynamicTexture = [];
+        healthBarMaterial = [];
+        healthBarContainerMaterial = [];
+        healthBarContainer = [];
+        healthPercentage = [];
+        alive = [];
+        bustedTank = [];
+        cactus = [];
+        radar = [];
+        cow = [];
+        helipad = [];
+        oilStorage = [];
+        palmTree = [];
+        tree = [];
+        rocks1 = [];
+        rocks2 = [];
+        barrel = [];
+
+        gameOver = 0;
+        currentTank = 0;
+
+        backSound.stop();
+        TankExplosion.stop();
+        bulletSound.stop();
+        EngineIdle.stop();
+        EngineDriving.stop();
     }
 
 }
