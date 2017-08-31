@@ -4,6 +4,7 @@ var currentTank = 0;
 var n;
 
 function Game() {
+
     /*Variables*/
     var canvas;
     var engine;
@@ -141,12 +142,15 @@ function Game() {
         }
     });
 
+
     /*GameStart*/
     for(var i=0;i<n;i++){
         tankNames.push("tank"+(i+1)+".babylon");
     }
     createScene();
     HUD();
+
+
 
     /*Functions*/
     function createAssetsManager() {
@@ -287,6 +291,8 @@ function Game() {
                 }
                 else {
                     GameOver();
+                    var musicPlayer = document.getElementById("musicPlayer");
+                    musicPlayer.play();
                     reset();
                 }
             });
@@ -520,7 +526,7 @@ function Game() {
             console.log(alive[tankID]);
             if (alive[tankID]) {
                 if(frontHealthBar[tankID].scaling.x>0){
-                    healthPercentage[tankID] -= 50;
+                    healthPercentage[tankID] -= 20;
                     frontHealthBar[tankID].scaling.x = healthPercentage[tankID] / 100;
                     backHealthBar[tankID].scaling.x = healthPercentage[tankID] / 100;
                     frontHealthBar[tankID].position.x =  (1- (healthPercentage[tankID] / 100)) * -0.35;
