@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", UI, false);
+
 function UI() {
     document.getElementById("renderCanvas").style.display = "none";
     document.getElementById("InstructionsCanvas").style.display = "none";
