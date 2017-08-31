@@ -948,7 +948,7 @@ function Game() {
     }
 
     function reset() {
-        //scene.dispose();
+        scene.dispose();
         tankNames = [];
         tank = [];
         textPlaneTexture = [];
