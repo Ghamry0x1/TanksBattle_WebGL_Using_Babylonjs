@@ -73,6 +73,7 @@ function Game() {
     var backSound;
     var TankExplosion;
     var bulletSound;
+    var BulletExplosion;
     var EngineIdle;
     var EngineDriving;
 
@@ -460,6 +461,58 @@ function Game() {
         }
     }
 
+    function createTanksParticles(){
+        tankParticlesRight = new BABYLON.ParticleSystem("particles", 100, scene);
+        tankParticlesRight.particleTexture = new BABYLON.Texture("images/flare.png", scene);
+        tankParticlesRight.emitter = tank[currentTank]; // the starting object, the emitter
+        tankParticlesRight.minEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 182, tank[currentTank].position.y - 50, tank[currentTank].position.z ); // Starting all from
+        tankParticlesRight.maxEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 182, tank[currentTank].position.y - 50, tank[currentTank].position.z); // To...
+        tankParticlesRight.position = tank[currentTank].bounder.position;
+        tankParticlesRight.color1 = new BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
+        tankParticlesRight.color2 = new BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
+        tankParticlesRight.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+        tankParticlesRight.minSize = 0.03;
+        tankParticlesRight.maxSize = 0.4;
+        tankParticlesRight.minLifeTime = 0.3;
+        tankParticlesRight.maxLifeTime = 0.3;
+        tankParticlesRight.emitRate = 30;
+        tankParticlesRight.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+        tankParticlesRight.gravity = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesRight.direction1 = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesRight.direction2 = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesRight.minAngularSpeed = 0;
+        tankParticlesRight.maxAngularSpeed = Math.PI;
+        tankParticlesRight.minEmitPower = 0.5;
+        tankParticlesRight.maxEmitPower = .5;
+        tankParticlesRight.updateSpeed = 0.03;
+        tankParticlesRight.start();
+
+        tankParticlesLeft = new BABYLON.ParticleSystem("particles", 100, scene);
+        tankParticlesLeft.particleTexture = new BABYLON.Texture("images/flare.png", scene);
+        tankParticlesLeft.emitter = tank[currentTank]; // the starting object, the emitter
+        tankParticlesLeft.minEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 68, tank[currentTank].position.y - 50, tank[currentTank].position.z); // Starting all from
+        tankParticlesLeft.maxEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 68, tank[currentTank].position.y - 50, tank[currentTank].position.z ); // To...
+        tankParticlesLeft.position = tank[currentTank].bounder.position;
+        tankParticlesLeft.color1 = new  BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
+        tankParticlesLeft.color2 = new  BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
+        tankParticlesLeft.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
+        tankParticlesLeft.minSize = 0.03;
+        tankParticlesLeft.maxSize = 0.4;
+        tankParticlesLeft.minLifeTime = 0.3;
+        tankParticlesLeft.maxLifeTime = 0.3;
+        tankParticlesLeft.emitRate = 30;
+        tankParticlesLeft.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+        tankParticlesLeft.gravity = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesLeft.direction1 = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesLeft.direction2 = new BABYLON.Vector3(0, 0, 0);
+        tankParticlesLeft.minAngularSpeed = 0;
+        tankParticlesLeft.maxAngularSpeed = Math.PI;
+        tankParticlesLeft.minEmitPower = 0.5;
+        tankParticlesLeft.maxEmitPower = .5;
+        tankParticlesLeft.updateSpeed = 0.03;
+        tankParticlesLeft.start();
+    }
+
     function createPlayerName() {
         for(var i = 0; i<tank.length; i++) {
             textPlaneTexture.push(new BABYLON.DynamicTexture("dynamic texture", 2048, scene, true));
@@ -772,58 +825,6 @@ function Game() {
         }
     }
 
-    function createTanksParticles(){
-        tankParticlesRight = new BABYLON.ParticleSystem("particles", 100, scene);
-        tankParticlesRight.particleTexture = new BABYLON.Texture("images/flare.png", scene);
-        tankParticlesRight.emitter = tank[currentTank]; // the starting object, the emitter
-        tankParticlesRight.minEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 182, tank[currentTank].position.y - 50, tank[currentTank].position.z ); // Starting all from
-        tankParticlesRight.maxEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 182, tank[currentTank].position.y - 50, tank[currentTank].position.z); // To...
-        tankParticlesRight.position = tank[currentTank].bounder.position;
-        tankParticlesRight.color1 = new BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
-        tankParticlesRight.color2 = new BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
-        tankParticlesRight.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
-        tankParticlesRight.minSize = 0.03;
-        tankParticlesRight.maxSize = 0.4;
-        tankParticlesRight.minLifeTime = 0.3;
-        tankParticlesRight.maxLifeTime = 0.3;
-        tankParticlesRight.emitRate = 30;
-        tankParticlesRight.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-        tankParticlesRight.gravity = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesRight.direction1 = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesRight.direction2 = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesRight.minAngularSpeed = 0;
-        tankParticlesRight.maxAngularSpeed = Math.PI;
-        tankParticlesRight.minEmitPower = 0.5;
-        tankParticlesRight.maxEmitPower = .5;
-        tankParticlesRight.updateSpeed = 0.03;
-        tankParticlesRight.start();
-
-        tankParticlesLeft = new BABYLON.ParticleSystem("particles", 100, scene);
-        tankParticlesLeft.particleTexture = new BABYLON.Texture("images/flare.png", scene);
-        tankParticlesLeft.emitter = tank[currentTank]; // the starting object, the emitter
-        tankParticlesLeft.minEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 68, tank[currentTank].position.y - 50, tank[currentTank].position.z); // Starting all from
-        tankParticlesLeft.maxEmitBox = new BABYLON.Vector3(tank[currentTank].position.x - 68, tank[currentTank].position.y - 50, tank[currentTank].position.z ); // To...
-        tankParticlesLeft.position = tank[currentTank].bounder.position;
-        tankParticlesLeft.color1 = new  BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
-        tankParticlesLeft.color2 = new  BABYLON.Color4(0.588, 0.411, 0.223, 0.3);
-        tankParticlesLeft.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
-        tankParticlesLeft.minSize = 0.03;
-        tankParticlesLeft.maxSize = 0.4;
-        tankParticlesLeft.minLifeTime = 0.3;
-        tankParticlesLeft.maxLifeTime = 0.3;
-        tankParticlesLeft.emitRate = 30;
-        tankParticlesLeft.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-        tankParticlesLeft.gravity = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesLeft.direction1 = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesLeft.direction2 = new BABYLON.Vector3(0, 0, 0);
-        tankParticlesLeft.minAngularSpeed = 0;
-        tankParticlesLeft.maxAngularSpeed = Math.PI;
-        tankParticlesLeft.minEmitPower = 0.5;
-        tankParticlesLeft.maxEmitPower = .5;
-        tankParticlesLeft.updateSpeed = 0.03;
-        tankParticlesLeft.start();
-    }
-
     function createFire(tankID){
         if(bustedTank[tankID]) {
             var smokeSystem = new BABYLON.ParticleSystem("particles", 1000, scene);
@@ -1074,6 +1075,11 @@ function Game() {
         binaryTask = assetsManager.addBinaryFileTask("EngineIdle task", "AudioClips/EngineIdle.mp3");
         binaryTask.onSuccess = function (task) {
             EngineIdle = new BABYLON.Sound("EngineIdle", task.data, scene, null, { loop: true, autoplay: true, volume: .6});
+        }
+
+        binaryTask = assetsManager.addBinaryFileTask("BulletExplosion task", "AudioClips/BulletExplosion.mp3");
+        binaryTask.onSuccess = function (task) {
+            BulletExplosion = new BABYLON.Sound("BulletExplosion", task.data, scene, null, { loop: false, autoplay: false});
         }
     }
 
