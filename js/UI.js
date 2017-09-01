@@ -14,6 +14,9 @@ function intro() {
 
     document.getElementById("sandBtn").style.display = "none";
     document.getElementById("fogBtn").style.display = "none";
+    document.getElementById("snowBtn").style.display = "none";
+    document.getElementById("forestBtn").style.display = "none";
+
     document.getElementById("backBtn").style.display = "none";
     document.getElementById("rematchBtn").style.display = "none";
     document.getElementById("playBtn").style.display = "none";
@@ -59,6 +62,9 @@ function UI() {
 
     document.getElementById("sandBtn").style.display = "none";
     document.getElementById("fogBtn").style.display = "none";
+    document.getElementById("snowBtn").style.display = "none";
+    document.getElementById("forestBtn").style.display = "none";
+
     document.getElementById("backBtn").style.display = "none";
     document.getElementById("rematchBtn").style.display = "none";
 
