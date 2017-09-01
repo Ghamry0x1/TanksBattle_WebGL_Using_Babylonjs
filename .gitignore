@@ -1,8 +1,6 @@
 
 *.meta
-*.aif
 *.mat
 *.fbx
-*.wav
 *.iml
 *.xml
