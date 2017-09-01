@@ -37,6 +37,8 @@
                 document.getElementById("MapsCanvas").style.display = "inline";
                 document.getElementById("sandBtn").style.display = "inline";
                 document.getElementById("fogBtn").style.display = "inline";
+                document.getElementById("snowBtn").style.display = "inline";
+                document.getElementById("forestBtn").style.display = "inline";
                 document.getElementById("NTanksContainer").style.display = "block";
                 document.getElementById("backBtn").style.display = "inline";
 
@@ -56,6 +58,8 @@
                 document.getElementById("backBtn").style.display = "none";
                 document.getElementById("sandBtn").style.display = "none";
                 document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
                 document.getElementById("rematchBtn").style.display = "none";
 
                 document.getElementById("UICanvas").style.display = "inline";
@@ -81,6 +85,8 @@
                 document.getElementById("creditsBtn").style.display = "none";
                 document.getElementById("sandBtn").style.display = "none";
                 document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
                 document.getElementById("rematchBtn").style.display = "none";
 
                 document.getElementById("CreditsCanvas").style.display = "inline";
@@ -104,6 +110,8 @@
                 document.getElementById("creditsBtn").style.display = "none";
                 document.getElementById("sandBtn").style.display = "none";
                 document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
                 document.getElementById("rematchBtn").style.display = "none";
 
                 document.getElementById("InstructionsCanvas").style.display = "inline";
@@ -125,6 +133,8 @@
                 document.getElementById("creditsBtn").style.display = "none";
                 document.getElementById("sandBtn").style.display = "none";
                 document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
                 document.getElementById("rematchBtn").style.display = "none";
 
                 document.getElementById("NTanksContainer").style.display = "none";
@@ -161,6 +171,8 @@
                 document.getElementById("creditsBtn").style.display = "none";
                 document.getElementById("sandBtn").style.display = "none";
                 document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
                 document.getElementById("rematchBtn").style.display = "none";
 
                 document.getElementById("NTanksContainer").style.display = "none";
@@ -182,6 +194,82 @@
                     n=8;
                 Game();
                 console.log("gotoFog called");
+            }
+            function gotoSnow() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+                document.getElementById("GameOverCanvas").style.display = "none";
+
+                document.getElementById("backBtn").style.display = "none";
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
+                document.getElementById("rematchBtn").style.display = "none";
+
+                document.getElementById("NTanksContainer").style.display = "none";
+                document.getElementById("WinnerContainer").style.display = "none";
+
+                document.getElementById("renderCanvas").style.display = "inline";
+                document.getElementById("timerContainer").style.display = "block";
+                document.getElementById("PlayerContainer").style.display = "block";
+                document.getElementById("slider").style.display = "block";
+
+                var musicPlayer = document.getElementById("musicPlayer");
+                musicPlayer.pause();
+
+                sceneNum = 2;
+                n = parseInt(document.getElementById("Label").value);
+                if(n < 2 || n == " ")
+                    n=2;
+                if(n>8)
+                    n=8;
+                Game();
+                console.log("gotoSnow called");
+            }
+            function gotoForest() {
+                document.getElementById("renderCanvas").style.display = "none";
+                document.getElementById("UICanvas").style.display = "none";
+                document.getElementById("CreditsCanvas").style.display = "none";
+                document.getElementById("InstructionsCanvas").style.display = "none";
+                document.getElementById("MapsCanvas").style.display = "none";
+                document.getElementById("GameOverCanvas").style.display = "none";
+
+                document.getElementById("backBtn").style.display = "none";
+                document.getElementById("playBtn").style.display = "none";
+                document.getElementById("instructionsBtn").style.display = "none";
+                document.getElementById("creditsBtn").style.display = "none";
+                document.getElementById("sandBtn").style.display = "none";
+                document.getElementById("fogBtn").style.display = "none";
+                document.getElementById("snowBtn").style.display = "none";
+                document.getElementById("forestBtn").style.display = "none";
+                document.getElementById("rematchBtn").style.display = "none";
+
+                document.getElementById("NTanksContainer").style.display = "none";
+                document.getElementById("WinnerContainer").style.display = "none";
+
+                document.getElementById("renderCanvas").style.display = "inline";
+                document.getElementById("timerContainer").style.display = "block";
+                document.getElementById("PlayerContainer").style.display = "block";
+                document.getElementById("slider").style.display = "block";
+
+                var musicPlayer = document.getElementById("musicPlayer");
+                musicPlayer.pause();
+
+                sceneNum = 3;
+                n = parseInt(document.getElementById("Label").value);
+                if(n < 2 || n == " ")
+                    n=2;
+                if(n>8)
+                    n=8;
+                Game();
+                console.log("gotoForest called");
             }
         </script>
         <script src="js/Game.js"></script>
@@ -213,14 +301,19 @@
              style="height: 85px;width: 198px;top: 79%;left: 42%;position: absolute;" id="creditsBtn" onclick="gotoCredits()">
         <img alt="instructionsBtn" src="images/instructions.png"
              style="height: 85px;width: 198px;top: 63%;left: 42%;position: absolute;" id="instructionsBtn" onclick="gotoInstructions()">
-        <img alt="sandBtn" src="images/sand.png"
-             style="height: 185px;width: 265px;top: 33%;left: 5%;position: absolute;display: inline;" id="sandBtn" onclick="gotoSand()">
-        <img alt="fogBtn" src="images/fog.png"
-             style="height: 185px;width: 265px;top: 33%;left: 28.6%;position: absolute;display: inline;" id="fogBtn" onclick="gotoFog()">
         <img alt="backBtn" src="images/back.png"
              style="height: 85px;width: 198px;top: 82%;left: 81%;position: absolute;" id="backBtn" onclick="gotoUI()">
         <img alt="rematchBtn" src="images/rematch.png"
              style="height: 85px;width: 198px;top: 82%;left: 81%;position: absolute;" id="rematchBtn" onclick="gotoMaps()">
+
+        <img alt="sandBtn" src="images/sand.png"
+             style="height: 185px;width: 200px;top: 30%;left: 5%;position: absolute;display: inline;" id="sandBtn" onclick="gotoSand()">
+        <img alt="fogBtn" src="images/fog.png"
+             style="height: 185px;width: 200px;top: 30%;left: 22.6%;position: absolute;display: inline;" id="fogBtn" onclick="gotoFog()">
+        <img alt="snowBtn" src="images/snow.jpg"
+             style="height: 185px;width: 200px;top: 30%;left: 40.2%;position: absolute;display: inline;" id="snowBtn" onclick="gotoSnow()">
+        <img alt="forestBtn" src="images/forest.jpg"
+             style="height: 185px;width: 200px;top: 30%;left: 57.8%;position: absolute;display: inline;" id="forestBtn" onclick="gotoForest()">
 
         <!-- ADS -->
         <div id="slider" >
