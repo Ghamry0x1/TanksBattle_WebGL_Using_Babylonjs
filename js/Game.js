@@ -185,6 +185,12 @@ function Game() {
         else if (sceneNum === 1) {
             createFogScene();
         }
+        else if (sceneNum === 2) {
+            createSnowScene();
+        }
+        else if (sceneNum === 3) {
+            createForestScene();
+        }
     }
 
     function createSandScene() {
@@ -198,9 +204,9 @@ function Game() {
         createAssetsManager();
         loadSounds();
 
-        ground = createGround();
+        ground = createGround("images/myHeightMap.png", "images/sand.jpg");
         light = createLight();
-        var skybox = createSkybox();
+        var skybox = createSkybox("images/skybox/skybox/skybox", true);
         for(var i=0;i<n;i++) {
             createTank(tankNames[i], i);
         }
@@ -232,9 +238,9 @@ function Game() {
         createAssetsManager();
         loadSounds();
 
-        ground = createGround();
+        ground = createGround("images/myHeightMap.png", "images/sand.jpg");
         light = createLight(1);
-        var skybox = createSkybox();
+        var skybox = createSkybox("images/skybox/skybox/skybox", true);
 
         for(var i=0;i<n;i++) {
             createTank(tankNames[i], i);
@@ -250,6 +256,64 @@ function Game() {
         rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 5);
         rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 5);
         barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 10);
+
+        waitForIt();
+    }
+
+    function createSnowScene() {
+        console.log("creating snow scene");
+        canvas = document.getElementById("renderCanvas");
+        engine = new BABYLON.Engine(canvas, true);
+        scene = new BABYLON.Scene(engine);
+        engine.isPointerLock = true;
+        engine.enableOfflineSupport = false;
+        scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+        scene.fogDensity = 0.005;
+        scene.fogColor = new BABYLON.Color3(1,.85,.85);
+        scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
+        createAssetsManager();
+        loadSounds();
+
+        ground = createGround("images/myHeightMap.png", "images/snow.jpg");
+        light = createLight(2);
+        var skybox = createSkybox("images/skybox/IceRiver/IceRiver", false);
+        for(var i=0;i<n;i++) {
+            createTank(tankNames[i], i);
+        }
+
+
+
+        waitForIt();
+    }
+
+    function createForestScene() {
+        console.log("creating forest scene");
+        canvas = document.getElementById("renderCanvas");
+        engine = new BABYLON.Engine(canvas, true);
+        scene = new BABYLON.Scene(engine);
+        engine.isPointerLock = true;
+        engine.enableOfflineSupport = false;
+        scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.CannonJSPlugin());
+        createAssetsManager();
+        loadSounds();
+
+        ground = createGround("images/myHeightMap.png", "images/sand.jpg");
+        light = createLight();
+        var skybox = createSkybox("images/skybox/skybox/skybox");
+        for(var i=0;i<n;i++) {
+            createTank(tankNames[i], i);
+        }
+
+        cactus = createModel("cactus.babylon", "cactusMaterial", new BABYLON.Color3(.3, .7, .2), .5, 1, .5, 18);
+        radar = createModel("radar.babylon", null, null, 1, 1, 1, 5);
+        cow = createModel("cow.babylon", null, null, 1, 1, 1, 25);
+        helipad = createModel("helipad.babylon", null, null, 2, 1, 2, 3);
+        oilStorage = createModel("oilStorage.babylon", null, null, 3, 1, 3, 2);
+        palmTree = createModel("palmTree.babylon", null, null, 1.5, 1, 1.5, 15);
+        tree = createModel("tree.babylon", null, null, 1.5, 1, 1.5, 15);
+        rocks1 = createModel("rocks1.babylon", null, null, 1, 1, 1, 7);
+        rocks2 = createModel("rocks2.babylon", null, null, 1, 1, 1, 7);
+        barrel = createModel("barrel.babylon", null, null, 1, 1, 1, 16);
 
         waitForIt();
     }
@@ -307,14 +371,17 @@ function Game() {
         if (flag === 1) {
             hemisphericlight.intensity = .3;
         }
+        else if(flag === 2) {
+            hemisphericlight.intensity = .8;
+        }
         return hemisphericlight;
     }
 
-    function createGround() {
-        var ground = new BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/myHeightMap.png", 500, 500, 20, 0, 10, scene, false, onGroundCreated);
+    function createGround(heightmap, texture) {
+        var ground = new BABYLON.Mesh.CreateGroundFromHeightMap("ground", heightmap, 500, 500, 20, 0, 10, scene, false, onGroundCreated);
 
         var groundMaterial = new BABYLON.StandardMaterial("m1", scene);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("images/sand.jpg", scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture(texture, scene);
         function onGroundCreated() {
             ground.material = groundMaterial;
             ground.checkCollisions = true;
@@ -323,15 +390,15 @@ function Game() {
         return ground;
     }
 
-    function createSkybox() {
+    function createSkybox(url, infDist) {
         var skybox = BABYLON.Mesh.CreateBox("skyBox", 500, scene);
         var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
         skyboxMaterial.backFaceCulling = false;
         skyboxMaterial.disableLighting = true;
         skybox.material = skyboxMaterial;
-        skybox.infiniteDistance = true;
+        skybox.infiniteDistance = infDist;
         skyboxMaterial.disableLighting = true;
-        var skyBoxTextureTask = assetsManager.addCubeTextureTask("skybox texture task", "images/skybox/skybox");
+        var skyBoxTextureTask = assetsManager.addCubeTextureTask("skybox texture task", url);
         skyBoxTextureTask.onSuccess = function (task) {
             skyboxMaterial.reflectionTexture = task.texture;
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
