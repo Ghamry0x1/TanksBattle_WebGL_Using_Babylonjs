@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", intro, false);
+document.addEventListener("DOMContentLoaded", UI, false);
 
 function intro() {
     document.getElementById("renderCanvas").style.display = "none";
@@ -6,7 +6,6 @@ function intro() {
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
     document.getElementById("GameOverCanvas").style.display = "none";
-    document.getElementById("timerContainer").style.display = "none";
     document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
     document.getElementById("NTanksContainer").style.display = "none";
@@ -54,7 +53,6 @@ function UI() {
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
     document.getElementById("GameOverCanvas").style.display = "none";
-    document.getElementById("timerContainer").style.display = "none";
     document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
     document.getElementById("NTanksContainer").style.display = "none";

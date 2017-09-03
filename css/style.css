@@ -44,25 +44,6 @@ body,
     overflow: hidden;
 }
 
-#timerContainer {
-    width: 255px;
-    z-index: 2;
-    top: 5%;
-    left: 1%;
-    position: absolute;
-    padding: 2px;
-    margin: auto;
-}
-#timer {
-    width: 100%;
-    z-index: 2;
-    position: relative;
-    color: #eeeeee;
-    font-family: "Comic Sans MS";
-    font-size: 28px;
-    text-align: left;
-}
-
 #PlayerContainer {
     width: 290px;
     z-index: 2;

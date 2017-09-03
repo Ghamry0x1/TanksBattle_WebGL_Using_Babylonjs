@@ -809,6 +809,7 @@ function Game() {
             fireSystem.maxEmitPower = 3;
             fireSystem.updateSpeed = 0.01;
             fireSystem.start();
+            BulletExplosion.play();
             setTimeout(function () {
                 fireSystem.stop();
             }, 200);
@@ -1082,20 +1083,6 @@ function Game() {
         /*ADS*/
         document.getElementById("slider").style.display = "block";
 
-        /*GAME_TIMER*/
-        document.getElementById("timerContainer").style.display = "block";
-        var timer = document.getElementById("timer");
-        var sec = 360;
-        var countTime = setInterval(function() {
-            sec--;
-            timer.innerHTML = "Game ends in " + sec + "s";
-            if(sec < 0) {
-                timer.innerHTML = "GameOver!";
-                gameOver = 1;
-                clearInterval(countTime);
-            }
-        }, 1000);
-
         /*PLAYER_INFO*/
         document.getElementById("PlayerContainer").style.display = "block";
         var PlayerTime = document.getElementById("PlayerTime");
@@ -1109,11 +1096,6 @@ function Game() {
             if(turnTimer <= 0) {
                 switchTanks();
                 countTime2;
-            }
-            if(sec<=0) {
-                PlayerTime.innerHTML = "Player " + (currentTank+1) + " time  left: " + 0 + "s";
-                PlayerDistance.innerHTML = "Player " + (currentTank+1) + " distance left: " + 0 + "m";
-                clearInterval(countTime2);
             }
         }, 1000);
     }
