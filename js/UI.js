@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", UI, false);
+document.addEventListener("DOMContentLoaded", intro, false);
 
 function intro() {
     document.getElementById("renderCanvas").style.display = "none";
