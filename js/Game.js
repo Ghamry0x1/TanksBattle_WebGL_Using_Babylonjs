@@ -346,7 +346,6 @@ function Game() {
                     if (!followCamera.lockedTarget&&cameraLocked) {
                         cameraLocked=false;
                         followCamera.lockedTarget = tank[currentTank];
-
                     }
 
                     if (movementLimit <= 0)
