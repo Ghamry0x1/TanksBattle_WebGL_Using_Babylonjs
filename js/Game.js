@@ -1,7 +1,7 @@
 var sceneNum = 0;
 var gameOver = 0;
-var currentTank = 0;
 var n;
+var alive = [];
 
 function Game() {
 
@@ -39,8 +39,8 @@ function Game() {
     var delayRayShot=false;
     var hasShot = false;
     var bullet;
-    var alive = [];
     var isMoving=false;
+    var currentTank = 0;
 
     var bulletSmoke;
     var bulletFire;

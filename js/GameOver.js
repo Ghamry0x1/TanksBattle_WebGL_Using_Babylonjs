@@ -26,12 +26,20 @@ function GameOver() {
     };
     bgImage.src = "images/GameOverPage.png";
 
-    //num of last alive tank (x)
-    /*var x;
-    for(var l=0; l<n; l++) {
-        //player with highest health = x
-        if(alive[l])
-            x=(l+1);
-    }*/
-    document.getElementById("Winner").innerHTML = "PLAYER " + (currentTank+1) + " WINS!";
+    //num of last alive tank (o)
+    var o;
+    for(var i in alive) {
+        //keda btlef 3al array alive kolaha
+        //fa hena ht3mel el conditions
+        //ama t3raf anhi el winner, hoto f variable "o" da
+        //hyttbe3 hwa fel satr el taht o+1 da
+
+        /*
+        if(bla bla) {
+            i = o;
+        }
+        */
+    }
+
+    document.getElementById("Winner").innerHTML = "PLAYER " + (o+1) + " WINS!";
 }
