@@ -4,7 +4,7 @@ function GameOver() {
     document.getElementById("CreditsCanvas").style.display = "none";
     document.getElementById("MapsCanvas").style.display = "none";
     document.getElementById("UICanvas").style.display = "none";
-    document.getElementById("timerContainer").style.display = "none";
+    //document.getElementById("timerContainer").style.display = "none";
     document.getElementById("PlayerContainer").style.display = "none";
     document.getElementById("slider").style.display = "none";
     document.getElementById("NTanksContainer").style.display = "none";
@@ -26,20 +26,5 @@ function GameOver() {
     };
     bgImage.src = "images/GameOverPage.png";
 
-    //num of last alive tank (o)
-    var o;
-    for(var i in alive) {
-        //keda btlef 3al array alive kolaha
-        //fa hena ht3mel el conditions
-        //ama t3raf anhi el winner, hoto f variable "o" da
-        //hyttbe3 hwa fel satr el taht o+1 da
-
-        /*
-        if(bla bla) {
-            i = o;
-        }
-        */
-    }
-
-    document.getElementById("Winner").innerHTML = "PLAYER " + (o+1) + " WINS!";
+    document.getElementById("Winner").innerHTML = "PLAYER " + (lastAlive+1) + " WINS!";
 }

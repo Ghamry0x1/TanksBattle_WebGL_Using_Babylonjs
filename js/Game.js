@@ -2,6 +2,7 @@ var sceneNum = 0;
 var gameOver = 0;
 var n;
 var alive = [];
+var lastAlive;
 
 function Game() {
 
@@ -352,6 +353,7 @@ function Game() {
                         dontMove=true;
 
                     applyTankMovements();
+                    checkGameOver();
                 }
                 else {
                     GameOver();
@@ -1165,6 +1167,17 @@ function Game() {
         bulletSound.stop();
         EngineIdle.stop();
         EngineDriving.stop();
+    }
+    function checkGameOver(){
+        var aliveCounter=0;
+        for(var i in alive){
+            if(alive[i]) {
+                aliveCounter++;
+                lastAlive = i;
+            }
+        }
+        if(aliveCounter == 1)
+            gameOver = 1;
     }
 
 }
