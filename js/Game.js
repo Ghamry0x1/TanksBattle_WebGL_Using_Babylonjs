@@ -470,62 +470,66 @@ function Game() {
     }
 
     function applyTankMovements() {
-        if (isWPressed && !dontMove) {
-            tank[currentTank].moveWithCollisions(tank[currentTank].frontVector);
-        }
-        if (isSPressed&&!dontMove) {
-            var reverseVector = tank[currentTank].frontVector.multiplyByFloats(-1, 1, -1);
-            tank[currentTank].moveWithCollisions(reverseVector);
-            followCamera.radius=18;
+        if(!(tank.length == 0)){
+            if (isWPressed && !dontMove) {
+                tank[currentTank].moveWithCollisions(tank[currentTank].frontVector);
+            }
+            if (isSPressed&&!dontMove) {
+                var reverseVector = tank[currentTank].frontVector.multiplyByFloats(-1, 1, -1);
+                tank[currentTank].moveWithCollisions(reverseVector);
+                followCamera.radius=18;
 
+            }
+            if (isDPressed) {
+                tank[currentTank].rotation.y += .1 * tank[currentTank].rotationSensitivity;
+                tank[currentTank].bounder.rotation.y += .1 * tank[currentTank].rotationSensitivity;
+            }
+            if (isAPressed) {
+                tank[currentTank].rotation.y -= .1 * tank[currentTank].rotationSensitivity;
+                tank[currentTank].bounder.rotation.y -= .1 * tank[currentTank].rotationSensitivity;
+            }
+            tank[currentTank].frontVector.x = Math.sin(tank[currentTank].rotation.y) * -0.5;
+            tank[currentTank].frontVector.z = Math.cos(tank[currentTank].rotation.y) * -0.5;
+            tank[currentTank].frontVector.y = -4; // adding a bit of gravity
         }
-        if (isDPressed) {
-            tank[currentTank].rotation.y += .1 * tank[currentTank].rotationSensitivity;
-            tank[currentTank].bounder.rotation.y += .1 * tank[currentTank].rotationSensitivity;
-        }
-        if (isAPressed) {
-            tank[currentTank].rotation.y -= .1 * tank[currentTank].rotationSensitivity;
-            tank[currentTank].bounder.rotation.y -= .1 * tank[currentTank].rotationSensitivity;
-        }
-        tank[currentTank].frontVector.x = Math.sin(tank[currentTank].rotation.y) * -0.5;
-        tank[currentTank].frontVector.z = Math.cos(tank[currentTank].rotation.y) * -0.5;
-        tank[currentTank].frontVector.y = -4; // adding a bit of gravity
     }
 
     function switchTanks() {
-        if (currentTank === tank.length - 1) {
-            currentTank = 0;
-            if(alive[currentTank]) {
-                hasShot=false;
-                followCamera.lockedTarget = tank[currentTank];
-                movementLimit = 150;
-                turnTimer = 15;
-                dontMove = false;
-                for(var i=0;i<tank.length;i++)
-                    tank[i].bounder.isPickable = true;
-                tank[currentTank].bounder.isPickable = false;
-                tankParticlesRight.emitter = tank[currentTank];
-                tankParticlesLeft.emitter = tank[currentTank];
+        if(!(tank.length == 0)) {
+            if (currentTank === tank.length - 1) {
+                currentTank = 0;
+                if (alive[currentTank]) {
+                    hasShot = false;
+                    followCamera.lockedTarget = tank[currentTank];
+                    movementLimit = 150;
+                    turnTimer = 15;
+                    dontMove = false;
+                    for (var i = 0; i < tank.length; i++)
+                        tank[i].bounder.isPickable = true;
+                    tank[currentTank].bounder.isPickable = false;
+                    tankParticlesRight.emitter = tank[currentTank];
+                    tankParticlesLeft.emitter = tank[currentTank];
+                }
+                else switchTanks();
             }
-            else switchTanks();
-        }
-        else {
-            currentTank++;
-            if(alive[currentTank]) {
+            else {
+                currentTank++;
+                if (alive[currentTank]) {
 
-                hasShot=false;
-                followCamera.lockedTarget = tank[currentTank];
-                movementLimit = 150;
-                turnTimer = 15;
-                dontMove = false;
-                for(var i=0;i<tank.length;i++)
-                    tank[i].bounder.isPickable = true;
-                tank[currentTank].bounder.isPickable = false;
-                tankParticlesRight.emitter = tank[currentTank];
-                tankParticlesLeft.emitter = tank[currentTank];
+                    hasShot = false;
+                    followCamera.lockedTarget = tank[currentTank];
+                    movementLimit = 150;
+                    turnTimer = 15;
+                    dontMove = false;
+                    for (var i = 0; i < tank.length; i++)
+                        tank[i].bounder.isPickable = true;
+                    tank[currentTank].bounder.isPickable = false;
+                    tankParticlesRight.emitter = tank[currentTank];
+                    tankParticlesLeft.emitter = tank[currentTank];
 
+                }
+                else switchTanks();
             }
-            else switchTanks();
         }
     }
 
