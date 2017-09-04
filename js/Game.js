@@ -434,7 +434,7 @@ function Game() {
             _tank.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0);
             _tank.applyGravity = true;
             _tank.frontVector = new BABYLON.Vector3(0, 0, -1);
-            _tank.rotationSensitivity = .05;
+            _tank.rotationSensitivity = .1;
             //shadowGenerator.getShadowMap().renderList.push(_tank);
 
             for(var j=0;j<_tank._children.length;j++){
