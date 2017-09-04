@@ -25,6 +25,5 @@ function GameOver() {
         context.drawImage(bgImage, 0, 0);
     };
     bgImage.src = "images/GameOverPage.png";
-
     document.getElementById("Winner").innerHTML = "PLAYER " + (lastAlive+1) + " WINS!";
 }

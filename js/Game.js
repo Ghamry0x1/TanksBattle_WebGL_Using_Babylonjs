@@ -2,7 +2,7 @@ var sceneNum = 0;
 var gameOver = 0;
 var n;
 var alive = [];
-var lastAlive;
+var lastAlive=0;
 
 function Game() {
 
@@ -1170,7 +1170,7 @@ function Game() {
     }
     function checkGameOver(){
         var aliveCounter=0;
-        for(var i in alive){
+        for(var i=0 ; i<n; i++){
             if(alive[i]) {
                 aliveCounter++;
                 lastAlive = i;
