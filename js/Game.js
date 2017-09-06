@@ -1172,6 +1172,7 @@ function Game() {
         EngineIdle.stop();
         EngineDriving.stop();
     }
+
     function checkGameOver(){
         var aliveCounter=0;
         for(var i=0 ; i<n; i++){
